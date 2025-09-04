@@ -31,3 +31,5 @@ This is a working plan. Track progress in Issues & Discussions.
 - Self-hosted model support (OpenAI-compatible endpoint)  
 - Multi-language summaries  
 - Commit message suggestions  
+
+<!-- minor tweak to trigger PR -->
