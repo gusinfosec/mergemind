@@ -2,7 +2,7 @@
 
 ![CI](https://github.com/gusinfosec/MergeMind/actions/workflows/pr-ai-describer.yml/badge.svg)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
-[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](/CONTRIBUTING.md)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 [![Stars](https://img.shields.io/github/stars/gusinfosec/MergeMind)](https://github.com/gusinfosec/MergeMind/stargazers)
 
 > **AI PR titles & descriptions from diffs. Zero-click. Consistent. Saves hours every sprint.**
@@ -13,7 +13,7 @@
 2. Add your `OPENAI_API_KEY` as a repository secret.  
 3. Open a PR — MergeMind will comment with a suggested title + summary.  
 
-👉 [Privacy policy](/PRIVACY.md) · [Contributing](/CONTRIBUTING.md) · [Roadmap](/ROADMAP.md)
+👉 [Privacy policy](PRIVACY.md) · [Contributing](CONTRIBUTING.md) · [Roadmap](ROADMAP.md)
 
 
 # 🤖 MergeMind
@@ -108,7 +108,7 @@ Add your API key as a **repo secret**:
 
 Clone & install:
 ```bash
-git clone https://github.com/gusinfosec/MergeMind.git mergemind
+git clone https://github.com/gusinfosec/pr-copilot-extension.git mergemind
 cd mergemind
 npm install
 ```
