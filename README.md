@@ -12,6 +12,8 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 [![Stars](https://img.shields.io/github/stars/gusinfosec/MergeMind)](https://github.com/gusinfosec/MergeMind/stargazers)
+[![Buy MergeMind Pro — $7/mo](https://img.shields.io/badge/Buy%20MergeMind%20Pro-$9%2Fmo-blue)](https://buy.stripe.com/8x2bJ10rS5Cv4bDdP1fbq00)
+
 
 > **AI PR titles & descriptions from diffs. Zero-click. Consistent. Saves hours every sprint.**
 
