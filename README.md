@@ -188,6 +188,18 @@ Create labels once (optional, but recommended):
 
 ---
 
+## 💳 Get MergeMind Pro
+
+Save hours every sprint with automated PR titles & descriptions.
+
+[![Buy MergeMind Pro — $7/mo](https://img.shields.io/badge/Buy%20MergeMind%20Pro-$7%2Fmo-blue?style=for-the-badge&logo=stripe)](https://buy.stripe.com/8x2bJ10rS5Cv4bDdP1fbq00)
+
+- Simple subscription: **$7/month**  
+- Secure checkout powered by **Stripe**  
+- License key delivered by email after purchase
+
+---
+
 ## 🤝 Contributing
 
 PRs welcome! Open an issue to propose changes or new styles.  
