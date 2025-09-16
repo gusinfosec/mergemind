@@ -179,12 +179,10 @@ Create labels once (optional, but recommended):
 
 ---
 
-## 📈 Roadmap
-
-- GitHub Marketplace listing (free + paid tiers)  
-- License key gate + lightweight verifier (Stripe)  
-- Repo policy presets & team analytics  
-- Multi-language summaries & commit message support
+## 🚀 Roadmap (TL;DR)
+**0–3m:** Marketplace, licensing + Stripe verifier, starter policy presets  
+**3–6m:** Enterprise presets, team analytics, multi-language PR/commits  
+**6–12m:** Compliance-aware AI rules, advanced Stripe, Atlassian/GitLab/Azure integrations
 
 ---
 
