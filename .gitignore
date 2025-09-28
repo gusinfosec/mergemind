@@ -1,4 +1,14 @@
-node_modules
-.env
+# more secrets
 dist
 api/data/*.csv
+
+# Secrets
+.env
+license-keys.txt
+
+# Build outputs
+*.zip
+release-*/
+
+# Node modules
+node_modules/

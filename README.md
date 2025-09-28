@@ -5,17 +5,59 @@
   </picture>
 </p>
 
-
 # MergeMind
 
 ![CI](https://github.com/gusinfosec/MergeMind/actions/workflows/pr-ai-describer.yml/badge.svg)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 [![Stars](https://img.shields.io/github/stars/gusinfosec/MergeMind)](https://github.com/gusinfosec/MergeMind/stargazers)
-[![Buy MergeMind Pro — $7/mo](https://img.shields.io/badge/Buy%20MergeMind%20Pro-$7%2Fmo-blue)](https://buy.stripe.com/8x2bJ10rS5Cv4bDdP1fbq00)
 
+> **Stop wasting hours writing PR text. MergeMind turns raw diffs into clean, consistent titles and summaries — instantly.**
 
-> **AI PR titles & descriptions from diffs. Zero-click. Consistent. Saves hours every sprint.**
+---
+
+## 💳 Get MergeMind
+
+Save hours every sprint with automated PR titles & descriptions.  
+Choose a subscription tier or a one-time download.
+
+<p align="center">
+  <a href="https://buy.stripe.com/8x2bJ10rS5Cv4bDdP1fbq00">
+    <img src="https://img.shields.io/badge/Pro-$7%2Fmo-blue?style=for-the-badge&logo=stripe" alt="Pro $7/mo">
+  </a>
+  <a href="https://buy.stripe.com/28E5kD4I8aWPdMdfX9fbq01">
+    <img src="https://img.shields.io/badge/Startup-$29%2Fmo-blue?style=for-the-badge&logo=stripe" alt="Startup $29/mo">
+  </a>
+  <a href="https://buy.stripe.com/eVqeVddeE9SL0ZrcKXfbq02">
+    <img src="https://img.shields.io/badge/Enterprise-$299%2Fmo-blue?style=for-the-badge&logo=stripe" alt="Enterprise $299/mo">
+  </a>
+</p>
+
+### ☕ One-Time Ko-fi Purchase
+Prefer a single purchase? Get the current version as a direct download.  
+(Future updates require a new purchase or Stripe subscription.)
+
+<p align="center">
+  <a href="https://ko-fi.com/gusinfosec">
+    <img src="https://ko-fi.com/img/githubbutton_sm.svg" alt="Support on Ko-fi"/>
+  </a>
+</p>
+
+---
+
+## 📊 Compare Plans
+
+| Feature                                | Pro ($7/mo) | Startup ($29/mo) | Enterprise ($299/mo) |
+|----------------------------------------|-------------|------------------|-----------------------|
+| AI-generated PR titles & descriptions  | ![Yes](https://img.shields.io/badge/-Yes-brightgreen) | ![Yes](https://img.shields.io/badge/-Yes-brightgreen) | ![Yes](https://img.shields.io/badge/-Yes-brightgreen) |
+| Zero-click GitHub Action integration   | ![Yes](https://img.shields.io/badge/-Yes-brightgreen) | ![Yes](https://img.shields.io/badge/-Yes-brightgreen) | ![Yes](https://img.shields.io/badge/-Yes-brightgreen) |
+| Team-ready workflows & presets         | ![No](https://img.shields.io/badge/-No-lightgrey) | ![Yes](https://img.shields.io/badge/-Yes-brightgreen) | ![Yes](https://img.shields.io/badge/-Yes-brightgreen) |
+| Standardized commit styles             | ![No](https://img.shields.io/badge/-No-lightgrey) | ![Yes](https://img.shields.io/badge/-Yes-brightgreen) | ![Yes](https://img.shields.io/badge/-Yes-brightgreen) |
+| Priority updates & roadmap influence   | ![No](https://img.shields.io/badge/-No-lightgrey) | ![Yes](https://img.shields.io/badge/-Yes-brightgreen) | ![Yes](https://img.shields.io/badge/-Yes-brightgreen) |
+| Advanced integrations (Atlassian, etc.)| ![No](https://img.shields.io/badge/-No-lightgrey) | ![No](https://img.shields.io/badge/-No-lightgrey) | ![Yes](https://img.shields.io/badge/-Yes-brightgreen) |
+| Premium support & onboarding           | ![No](https://img.shields.io/badge/-No-lightgrey) | ![No](https://img.shields.io/badge/-No-lightgrey) | ![Yes](https://img.shields.io/badge/-Yes-brightgreen) |
+
+---
 
 ## 🚀 Quick Install
 
@@ -24,12 +66,6 @@
 3. Open a PR — MergeMind will comment with a suggested title + summary.  
 
 👉 [Privacy policy](PRIVACY.md) · [Contributing](CONTRIBUTING.md) · [Roadmap](ROADMAP.md)
-
-
-# 🤖 MergeMind
-
-**AI-powered PR titles & descriptions from your diffs.**  
-Zero-click. Configurable. Helps teams review faster with consistent, concise context.
 
 ---
 
@@ -186,18 +222,6 @@ Create labels once (optional, but recommended):
 
 ---
 
-## 💳 Get MergeMind Pro
-
-Save hours every sprint with automated PR titles & descriptions.
-
-[![Buy MergeMind Pro — $7/mo](https://img.shields.io/badge/Buy%20MergeMind%20Pro-$7%2Fmo-blue?style=for-the-badge&logo=stripe)](https://buy.stripe.com/8x2bJ10rS5Cv4bDdP1fbq00)
-
-- Simple subscription: **$7/month**  
-- Secure checkout powered by **Stripe**  
-- License key delivered by email after purchase
-
----
-
 ## 🤝 Contributing
 
 PRs welcome! Open an issue to propose changes or new styles.  
@@ -212,6 +236,5 @@ See the [LICENSE](LICENSE) file for details.
 
 ---
 
-## 🏷️ Tags
-
+## 🏷️ Tags 
 `github-actions` · `pull-requests` · `ai` · `openai` · `developer-productivity`
