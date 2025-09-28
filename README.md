@@ -38,7 +38,7 @@ Prefer a single purchase? Get the current version as a direct download.
 (Future updates require a new purchase or Stripe subscription.)
 
 <p align="center">
-  <a href="https://ko-fi.com/gusinfosec">
+  <a href="https://ko-fi.com/s/8fa53b788d">
     <img src="https://ko-fi.com/img/githubbutton_sm.svg" alt="Support on Ko-fi"/>
   </a>
 </p>
