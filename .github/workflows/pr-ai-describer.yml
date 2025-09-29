@@ -3,7 +3,7 @@ name: PR AI Describer
 on:
   workflow_dispatch:
   pull_request:
-    types: [opened, edited]
+    types: [opened, edited, synchronize]
   push:
     branches: [main]
 
@@ -11,5 +11,17 @@ jobs:
   describe:
     runs-on: ubuntu-latest
     steps:
-      - name: Always succeed
-        run: echo "Workflow stubbed — passing ✅"
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run MergeMind action
+        run: node src/action.js
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
