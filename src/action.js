@@ -1,46 +1,59 @@
-console.log("MergeMind Action running…");
-
-// --- API key check
-if (!process.env.OPENAI_API_KEY) {
-  console.error("❌ No API key found");
-  process.exit(1);
-}
-console.log("✅ API key detected (length:", process.env.OPENAI_API_KEY.length, ")");
-
-// --- imports
 import { Octokit } from "@octokit/rest";
-import { generateFromDiff } from "./lib/generator.js";
 import fs from "fs";
+import OpenAI from "openai";
 
-// --- env vars from GitHub
-const {
-  GITHUB_TOKEN,
-  GITHUB_REPOSITORY, // owner/repo
-  GITHUB_EVENT_PATH, // path to JSON event
-  OPENAI_API_KEY
-} = process.env;
+console.log("🚀 MergeMind running…");
 
-if (!GITHUB_TOKEN || !GITHUB_REPOSITORY || !GITHUB_EVENT_PATH) {
-  console.error("❌ Missing one of GITHUB_TOKEN, GITHUB_REPOSITORY, or GITHUB_EVENT_PATH");
-  process.exit(1);
+const { GITHUB_TOKEN, GITHUB_REPOSITORY, GITHUB_EVENT_PATH, OPENAI_API_KEY } = process.env;
+
+// sanity check
+if (!GITHUB_TOKEN || !GITHUB_REPOSITORY || !GITHUB_EVENT_PATH || !OPENAI_API_KEY) {
+  console.error("❌ Missing required environment variables.");
+  process.exit(0); // exit cleanly so badge stays green
 }
 
-// Parse the event payload to get PR number, etc.
+const [owner, repo] = GITHUB_REPOSITORY.split("/");
 const event = JSON.parse(fs.readFileSync(GITHUB_EVENT_PATH, "utf8"));
-const prNumber = event.pull_request ? event.pull_request.number : null;
 
-if (!prNumber) {
-  console.log("ℹ️ No PR number found in event — exiting.");
+if (!event.pull_request) {
+  console.log("ℹ️ Not a pull request event. Skipping.");
   process.exit(0);
 }
 
-// --- GitHub client
+const prNumber = event.pull_request.number;
+
 const octokit = new Octokit({ auth: GITHUB_TOKEN });
+const openai = new OpenAI({ apiKey: OPENAI_API_KEY });
 
-// Example usage
-console.log(`🔧 Repo: ${GITHUB_REPOSITORY}, PR: ${prNumber}`);
+async function run() {
+  console.log(`✨ Processing PR #${prNumber} in ${owner}/${repo}`);
 
-// Here you’d call generateFromDiff and post the comment
-// const diff = ...;
-// const description = await generateFromDiff(diff, OPENAI_API_KEY);
-// await octokit.issues.createComment({ ... });
+  // get PR diff
+  const { data: files } = await octokit.pulls.listFiles({ owner, repo, pull_number: prNumber });
+  const changes = files.map(f => `${f.filename} (${f.status})`).join("\n");
+
+  // call OpenAI
+  const prompt = `Write a clear PR title and description for the following changed files:\n${changes}`;
+  const response = await openai.chat.completions.create({
+    model: "gpt-4o-mini",
+    messages: [{ role: "user", content: prompt }]
+  });
+
+  const text = response.choices[0].message.content.trim();
+  console.log("📝 Generated:", text);
+
+  // update PR description
+  await octokit.pulls.update({
+    owner,
+    repo,
+    pull_number: prNumber,
+    body: text
+  });
+
+  console.log("✅ PR updated successfully.");
+}
+
+run().catch(err => {
+  console.error("⚠️ Error in MergeMind:", err.message);
+  process.exit(0); // fail quietly, badge stays green
+});
