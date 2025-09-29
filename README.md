@@ -10,7 +10,8 @@
 ![CI](https://github.com/gusinfosec/MergeMind/actions/workflows/pr-ai-describer.yml/badge.svg)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
-[![Stars](https://img.shields.io/github/stars/gusinfosec/MergeMind)](https://github.com/gusinfosec/MergeMind/stargazers) ![Build](https://github.com/gusinfosec/compliance-as-code/actions/workflows/ci.yml/badge.svg)
+[![Stars](https://img.shields.io/github/stars/gusinfosec/MergeMind)](https://github.com/gusinfosec/MergeMind/stargazers) 
+![Build for Linux](https://img.shields.io/badge/build-Linux-green)
 
 
 > **Stop wasting hours writing PR text. MergeMind turns raw diffs into clean, consistent titles and summaries — instantly.**
