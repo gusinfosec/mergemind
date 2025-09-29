@@ -1,50 +1,46 @@
-tee src/action.js > /dev/null <<'JS'
+console.log("MergeMind Action running…");
+
+// --- API key check
+if (!process.env.OPENAI_API_KEY) {
+  console.error("❌ No API key found");
+  process.exit(1);
+}
+console.log("✅ API key detected (length:", process.env.OPENAI_API_KEY.length, ")");
+
+// --- imports
 import { Octokit } from "@octokit/rest";
 import { generateFromDiff } from "./lib/generator.js";
 import fs from "fs";
 
-// Env vars provided by GitHub Actions
+// --- env vars from GitHub
 const {
   GITHUB_TOKEN,
-  REPO_FULL,
-  PR_NUMBER,
+  GITHUB_REPOSITORY, // owner/repo
+  GITHUB_EVENT_PATH, // path to JSON event
   OPENAI_API_KEY
 } = process.env;
 
-if (!GITHUB_TOKEN || !REPO_FULL || !PR_NUMBER || !OPENAI_API_KEY) {
-  console.error("Missing required environment variables.");
+if (!GITHUB_TOKEN || !GITHUB_REPOSITORY || !GITHUB_EVENT_PATH) {
+  console.error("❌ Missing one of GITHUB_TOKEN, GITHUB_REPOSITORY, or GITHUB_EVENT_PATH");
   process.exit(1);
 }
 
-(async () => {
-  try {
-    const [owner, repo] = REPO_FULL.split("/");
-    const octokit = new Octokit({ auth: GITHUB_TOKEN });
+// Parse the event payload to get PR number, etc.
+const event = JSON.parse(fs.readFileSync(GITHUB_EVENT_PATH, "utf8"));
+const prNumber = event.pull_request ? event.pull_request.number : null;
 
-    // 1. Get PR diff
-    const { data: pr } = await octokit.pulls.get({
-      owner,
-      repo,
-      pull_number: PR_NUMBER,
-      mediaType: { format: "diff" },
-    });
+if (!prNumber) {
+  console.log("ℹ️ No PR number found in event — exiting.");
+  process.exit(0);
+}
 
-    const diff = pr; // raw diff string
-    const result = await generateFromDiff(diff);
+// --- GitHub client
+const octokit = new Octokit({ auth: GITHUB_TOKEN });
 
-    // 2. Post as PR comment
-    await octokit.issues.createComment({
-      owner,
-      repo,
-      issue_number: PR_NUMBER,
-      body: `🤖 **MergeMind PR Summary**\n\n${result}`,
-    });
+// Example usage
+console.log(`🔧 Repo: ${GITHUB_REPOSITORY}, PR: ${prNumber}`);
 
-    console.log("✅ Posted PR summary via MergeMind.");
-  } catch (err) {
-    console.error("❌ Action failed:", err);
-    process.exit(1);
-  }
-})();
-JS
-
+// Here you’d call generateFromDiff and post the comment
+// const diff = ...;
+// const description = await generateFromDiff(diff, OPENAI_API_KEY);
+// await octokit.issues.createComment({ ... });
