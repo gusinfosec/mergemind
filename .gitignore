@@ -10,5 +10,12 @@ license-keys.txt
 *.zip
 release-*/
 
+# Logs
+logs
+*.log
+
+# Ignore local PDFs
+*.pdf
+
 # Node modules
 node_modules/
