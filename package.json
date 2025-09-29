@@ -1,24 +1,12 @@
 {
-  "name": "pr-copilot-extension",
+  "name": "mergemind",
   "version": "1.0.0",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "description": "",
   "type": "module",
+  "main": "src/action.js",
+  "scripts": {
+    "start": "node src/action.js"
+  },
   "dependencies": {
-    "@octokit/rest": "^22.0.0",
-    "body-parser": "^2.2.0",
-    "dotenv": "^17.2.2",
-    "express": "^5.1.0",
-    "js-yaml": "^4.1.0",
-    "nodemailer": "^7.0.6",
-    "openai": "^5.19.1",
-    "stripe": "^18.5.0",
-    "zod": "^3.25.76"
+    "@octokit/rest": "^20.0.0"
   }
 }
