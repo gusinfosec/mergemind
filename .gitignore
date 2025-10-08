@@ -19,3 +19,18 @@ logs
 
 # Node modules
 node_modules/
+
+#licenses
+
+services/stripe/data
+
+# secrets
+.env
+
+# runtime
+data/
+
+# build
+dist/
+node_modules/
+
