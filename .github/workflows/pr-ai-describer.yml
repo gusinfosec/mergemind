@@ -3,6 +3,11 @@ name: PR AI Describer
 on:
   pull_request:
     types: [opened, synchronize]
+<<<<<<< HEAD
+=======
+  push:
+    branches: [main]
+>>>>>>> 6b3cf2d (FIX: clean workflow structure)
 
 jobs:
   describe:
