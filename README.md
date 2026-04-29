@@ -1,9 +1,10 @@
  <p align="center">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="assets/marketing/mergemind_banner_dark.png">
-    <img alt="MergeMind Banner" src="assets/marketing/mergemind_logo.png" width="100%">
+    <source media="(prefers-color-scheme: dark)" srcset="assets/marketing/mergemind_github.png">
+    <img alt="MergeMind Banner" src="assets/marketing/mergemind_github" width="100%">
   </picture>
 </p>
+
 
 
 <p align="center">
