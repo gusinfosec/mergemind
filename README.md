@@ -5,10 +5,12 @@
   </picture>
 </p>
 
-> ![CI](https://github.com/gusinfosec/MergeMind/actions/workflows/pr-ai-describer.yml/badge.svg)
-> [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://chatgpt.com/c/LICENSE)
-> [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://chatgpt.com/c/CONTRIBUTING.md)
-> [![Stars](https://img.shields.io/github/stars/gusinfosec/MergeMind)](https://github.com/gusinfosec/MergeMind/stargazers)
+<p align="center">
+  <img src="https://github.com/gusinfosec/mergemind/actions/workflows/pr-ai-describer.yml/badge.svg" />
+  <img src="https://img.shields.io/badge/License-MIT-green.svg" />
+  <img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg" />
+  <img src="https://img.shields.io/github/stars/gusinfosec/mergemind" />
+</p>
 >
 > **Stop wasting hours writing PR text. MergeMind turns raw diffs into clean, consistent titles and summaries — instantly.**
 
