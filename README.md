@@ -1,9 +1,10 @@
  <p align="center">
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="assets/marketing/mergemind_banner_dark.png">
-    <img alt="MergeMind Banner" src="assets/marketing/mergemind_banner_light.png" width="100%">
+    <img alt="MergeMind Banner" src="assets/marketing/mergemind_logo.png" width="100%">
   </picture>
 </p>
+
 
 <p align="center">
   <img src="https://github.com/gusinfosec/mergemind/actions/workflows/pr-ai-describer.yml/badge.svg" />
@@ -93,10 +94,11 @@ Ko-fi (Live)
 Stripe (Live)
 
 <p align="center">
-  <a href="YOUR_STRIPE_LINK">
+  <a href="https://buy.stripe.com/28E5kD4I8aWPdMdfX9fbq01">
     <img src="https://img.shields.io/badge/Buy%20Pro-Stripe-blue?style=for-the-badge&logo=stripe" />
   </a>
 </p>
+
 
 ---
 
