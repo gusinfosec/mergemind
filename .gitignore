@@ -34,5 +34,7 @@ data/keys.json
 # build
 dist/
 node_modules/
+src/keys.js
+
 
 *~
