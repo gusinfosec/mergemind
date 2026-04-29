@@ -29,6 +29,7 @@ services/stripe/data
 
 # runtime
 data/
+data/keys.json
 
 # build
 dist/

@@ -1,10 +1,9 @@
-name: PR AI Describer
+
+name: MergeMind AI Engine
 
 on:
   pull_request:
-    types: [opened, synchronize]
-  push:
-    branches: [main]
+    types: [opened, synchronize, reopened]
 
 jobs:
   describe:
@@ -27,3 +26,4 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          MERGEMIND_API_KEY: ${{ secrets.MERGEMIND_API_KEY }}

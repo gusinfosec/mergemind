@@ -1,4 +1,4 @@
-<p align="center">
+ <p align="center">
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="assets/marketing/mergemind_banner_dark.png">
     <img alt="MergeMind Banner" src="assets/marketing/mergemind_banner_light.png" width="100%">
@@ -12,146 +12,153 @@
   <img src="https://img.shields.io/github/stars/gusinfosec/mergemind" />
 </p>
 
-**Stop wasting hours writing PR text. MergeMind turns raw diffs into clean, consistent titles and summaries — instantly.**
+---
 
-------
+Stop wasting hours writing PR text.  
+MergeMind turns raw diffs into clean, structured pull request summaries instantly.
 
-## 🚀 What is MergeMind?
+---
 
-MergeMind turns raw GitHub diffs into clean, structured pull request titles and summaries automatically.
+## What is MergeMind?
 
-Built for developers, teams, and modern engineering workflows.
+MergeMind is a GitHub Action that automatically generates:
 
-------
+- PR titles  
+- summaries  
+- key changes  
+- risk insights  
 
-## 🎬 Demo (Coming Soon)
+Built for developers, teams, and modern workflows.
 
-See MergeMind in action — PR opened → summary generated instantly.
+---
 
-------
+## Before / After
 
-## ✍️ Before / After
+Before:
 
-### Before
+Updated some files and fixed bugs
 
-"Updated some files and fixed bugs"
+After (MergeMind):
 
-### After (MergeMind)
+feat(auth): enforce MFA validation and improve session handling
 
-"feat(auth): enforce MFA validation and improve session handling
+- Added MFA enforcement  
+- Improved session timeout logic  
+- Updated validation middleware  
 
-- Added MFA enforcement
-- Improved session timeout logic
-- Updated validation middleware"
+---
 
-------
+## Features
 
-## 🔥 Why it matters
+- AI-generated PR summaries  
+- GitHub Actions integration  
+- Clean structured output  
+- Zero-click automation  
 
-Developers waste hours every sprint writing PR descriptions.
+---
 
-MergeMind:
+## Free vs Pro
 
-- Saves time
-- Standardizes documentation
-- Improves code reviews
-- Reduces friction in pull requests
+Feature | Free | Pro  
+--------|------|-----
+AI Summary | Yes | Yes  
+Full Diff Analysis | No | Yes  
+PR Auto Update | No | Yes  
+Advanced Prompts | No | Yes  
 
-------
+---
 
-## ⚡ Features
+## Upgrade to Pro
 
-- AI-generated PR titles & summaries
-- GitHub Actions integration
-- Clean, structured output
-- Consistent formatting
-- Zero-click automation
+Add your key in:
 
-------
+Settings → Secrets → Actions  
 
-## 💳 Get MergeMind
+MERGEMIND_API_KEY=your_key_here  
 
-### ☕ One-Time Purchase — $39
+---
 
-- Lifetime access (current version)
-- No subscription required
-- Instant download
+## Get MergeMind Pro
 
-------
+Ko-fi (Live)
 
-## 🧠 Access Model
+<p align="center">
+  <a href="https://ko-fi.com/s/8fa53b788d">
+    <img src="https://img.shields.io/badge/Pro-$29%20One--Time-orange?style=for-the-badge&logo=buymeacoffee" />
+  </a>
+</p>
 
-This public repository provides a **base version for evaluation and learning**.
+---
 
-The purchased version includes:
+Stripe (Live)
 
-- Enhanced output quality
-- More structured summaries
-- Continued improvements and updates
+<p align="center">
+  <a href="YOUR_STRIPE_LINK">
+    <img src="https://img.shields.io/badge/Buy%20Pro-Stripe-blue?style=for-the-badge&logo=stripe" />
+  </a>
+</p>
 
-------
+---
 
-## 🚀 Quick Install
+## Access Model
 
-1. Copy the workflow from `.github/workflows/pr-ai-describer.yml`
-2. Add your `OPENAI_API_KEY` as a GitHub Secret
-3. Open a PR — MergeMind generates the summary automatically
+This repository provides a free version for evaluation.
 
-⚠️ **Important:**
-You must provide your own OpenAI API key. MergeMind does not include or manage API usage.
+Pro access is unlocked via:
+- API key (sent after purchase)  
+- Feature unlock (no download required)  
 
-------
+---
 
-## 🔐 Security
+## Quick Install
 
-- API keys are stored via GitHub Secrets
-- MergeMind does not store any data
-- Users control their own API usage and costs
+1. Copy workflow from:
+.github/workflows/pr-ai-describer.yml  
 
-------
+2. Add your OpenAI key:
+OPENAI_API_KEY=sk-...  
 
-## 🛠 Local Dev
+3. Optional (Pro):
+MERGEMIND_API_KEY=your_key  
 
-```bash
-git clone https://github.com/gusinfosec/MergeMind.git
-cd MergeMind
-npm install
-```
+4. Open a PR → MergeMind runs automatically  
 
-Run with sample diff:
+---
 
-```bash
-export OPENAI_API_KEY="sk-..."
-node src/index.js
-```
+## Security
 
-------
+- Uses GitHub Secrets  
+- No data stored externally  
+- Users control API usage  
 
-## 🧩 Ecosystem
+---
 
-MergeMind → Developer productivity
-Compliance AI → Audit & compliance automation
+## Local Dev
 
-[https://compliance.cyberlaboratory.cc](https://compliance.cyberlaboratory.cc/)
+git clone https://github.com/gusinfosec/MergeMind.git  
+cd MergeMind  
+npm install  
 
-------
+Run:
 
-## 📜 License
+export OPENAI_API_KEY="sk-..."  
+node src/action.js  
 
-This project is licensed under the MIT License.
-See the LICENSE file for details.
+---
 
-------
+## Ecosystem
 
-## 🏷️ Tags
+MergeMind → Developer productivity  
+Compliance AI → Audit automation  
 
-`github-actions` · `pull-requests` · `ai` · `openai` · `developer-productivity`
+https://compliance.cyberlaboratory.cc  
 
-------
+---
 
-**Build faster. Review smarter. Ship cleaner.**
+## License
 
+MIT License  
 
+---
 
-
-
+Build faster. Review smarter. Ship cleaner.
