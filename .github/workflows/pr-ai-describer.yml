@@ -3,20 +3,24 @@ name: PR AI Describer
 on:
   pull_request:
     types: [opened, synchronize]
-<<<<<<< HEAD
-=======
-  push:
-    branches: [main]
->>>>>>> 6b3cf2d (FIX: clean workflow structure)
 
 jobs:
   describe:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Generate PR Summary
-        run: |
-          echo "🤖 MergeMind is running..."
-          echo "PR Title: ${{ github.event.pull_request.title }}"
-          echo "PR Author: ${{ github.actor }}"
-          echo "Files changed: ${{ github.event.pull_request.changed_files }}"
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run MergeMind
+        run: node src/action.js
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
