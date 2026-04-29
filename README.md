@@ -25,10 +25,10 @@ Choose a subscription tier or a one-time download.
 
 <p align="center">
   <a href="https://buy.stripe.com/8x2bJ10rS5Cv4bDdP1fbq00">
-    <img src="https://img.shields.io/badge/Pro-$7%2Fmo-blue?style=for-the-badge&logo=stripe" alt="Pro $7/mo">
+    <img src="https://img.shields.io/badge/Pro-$7%2Fmo-blue?style=for-the-badge&logo=stripe" alt="Startup $7/mo">
   </a>
   <a href="https://buy.stripe.com/28E5kD4I8aWPdMdfX9fbq01">
-    <img src="https://img.shields.io/badge/Startup-$29%2Fmo-blue?style=for-the-badge&logo=stripe" alt="Startup $29/mo">
+    <img src="https://img.shields.io/badge/Pro-$29%2Fmo-blue?style=for-the-badge&logo=stripe" alt="Pro $29/mo">
   </a>
   <a href="https://buy.stripe.com/eVqeVddeE9SL0ZrcKXfbq02">
     <img src="https://img.shields.io/badge/Enterprise-$299%2Fmo-blue?style=for-the-badge&logo=stripe" alt="Enterprise $299/mo">
