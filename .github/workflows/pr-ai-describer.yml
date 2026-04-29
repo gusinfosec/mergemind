@@ -3,6 +3,8 @@ name: PR AI Describer
 on:
   pull_request:
     types: [opened, synchronize]
+  push:
+    branches: [main]
 
 jobs:
   describe:
