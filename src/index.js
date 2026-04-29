@@ -1,8 +1,36 @@
-import fs from "node:fs";
-import { generateFromDiff } from "./lib/generator.js";
+import OpenAI from "openai";
 
-const diff = fs.readFileSync("./sample.diff", "utf8");
-const out = await generateFromDiff({
-  diff, repo: "your/repo", author: "gusinfosec"
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
 });
-console.log(out);
+
+async function run() {
+  const diff = `
+- auth.js (modified)
+- session.js (modified)
+- middleware.js (added)
+`;
+
+  const prompt = `
+You are a senior engineer.
+
+Generate:
+- PR title
+- Summary
+- Key changes
+- Risk level
+
+Changed files:
+${diff}
+`;
+
+  const response = await openai.chat.completions.create({
+    model: "gpt-4o-mini",
+    messages: [{ role: "user", content: prompt }],
+  });
+
+  console.log("\n🧪 Local Test Output:\n");
+  console.log(response.choices[0].message.content);
+}
+
+run().catch(console.error);
