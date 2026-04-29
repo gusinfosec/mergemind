@@ -11,8 +11,8 @@
   <img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg" />
   <img src="https://img.shields.io/github/stars/gusinfosec/mergemind" />
 </p>
->
-> **Stop wasting hours writing PR text. MergeMind turns raw diffs into clean, consistent titles and summaries — instantly.**
+
+**Stop wasting hours writing PR text. MergeMind turns raw diffs into clean, consistent titles and summaries — instantly.**
 
 ------
 
