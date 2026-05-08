@@ -5,6 +5,10 @@
   </picture>
 </p>
 
+<h1 align="center">MergeMind</h1>
+
+<p align="center"><b>AI-powered pull request summaries, risk insights, and review recommendations — instantly.</b></p>
+
 <p align="center">
   <img src="https://github.com/gusinfosec/mergemind/actions/workflows/pr-ai-describer.yml/badge.svg" />
   <img src="https://img.shields.io/badge/License-MIT-green.svg" />
@@ -114,11 +118,13 @@ Unlock the full experience:
 
 1. Purchase via Ko-fi or Stripe  
 2. Receive your API key  
-3. Add it to your repository:
+3. Add it to your repository secrets:
 
-Settings → Secrets → Actions  
+> **Settings → Secrets and variables → Actions → New repository secret**
 
-MERGEMIND_API_KEY=your_key_here  
+```
+MERGEMIND_API_KEY=your_key_here
+```
 
 4. Open a PR → MergeMind runs automatically  
 
@@ -134,22 +140,40 @@ Pro access is unlocked via:
 
 ---
 
-## 🚀 Quick Install
+## ⚙️ Quick Install
 
-1. Copy workflow from:  
-.github/workflows/pr-ai-describer.yml  
+1. Add this workflow to your repo at `.github/workflows/mergemind.yml`:
 
-2. Add your OpenAI key:  
-OPENAI_API_KEY=sk-...  
+```yaml
+name: MergeMind PR Describer
+on:
+  pull_request:
+    types: [opened, synchronize]
 
-3. (Optional Pro):  
-MERGEMIND_API_KEY=your_key  
+jobs:
+  describe:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Run MergeMind
+        uses: gusinfosec/mergemind@main
+        with:
+          openai_api_key: ${{ secrets.OPENAI_API_KEY }}
+          mergemind_api_key: ${{ secrets.MERGEMIND_API_KEY }}  # Pro only
+```
 
-4. Open a PR → MergeMind runs automatically  
+2. Add your secrets under **Settings → Secrets and variables → Actions**:
+
+```
+OPENAI_API_KEY=sk-...
+MERGEMIND_API_KEY=your_key   # Pro only
+```
+
+3. Open a PR → MergeMind runs automatically  
 
 ---
 
-## 🔐 Security
+## 🛡️ Security
 
 - Uses GitHub Secrets  
 - No data stored externally  
@@ -159,14 +183,18 @@ MERGEMIND_API_KEY=your_key
 
 ## 🛠 Local Dev
 
-git clone https://github.com/gusinfosec/MergeMind.git  
-cd MergeMind  
-npm install  
+```bash
+git clone https://github.com/gusinfosec/MergeMind.git
+cd MergeMind
+npm install
+```
 
 Run:
 
-export OPENAI_API_KEY="sk-..."  
-node src/action.js  
+```bash
+export OPENAI_API_KEY="sk-..."
+node src/action.js
+```
 
 ---
 
@@ -175,7 +203,7 @@ node src/action.js
 MergeMind → Developer productivity  
 Compliance AI → Audit automation  
 
-https://compliance.cyberlaboratory.cc  
+👉 [compliance.cyberlaboratory.cc](https://compliance.cyberlaboratory.cc)  
 
 ---
 
