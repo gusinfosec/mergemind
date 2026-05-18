@@ -1,5 +1,4 @@
 import { execSync } from "child_process";
-import fetch from "node-fetch";
 
 const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
