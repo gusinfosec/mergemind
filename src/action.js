@@ -1,11 +1,12 @@
 import { execSync } from "child_process";
+import fetch from "node-fetch";
 
 const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 const MERGEMIND_LICENSE_KEY = process.env.MERGEMIND_LICENSE_KEY;
 const MERGEMIND_VALIDATION_URL =
   process.env.MERGEMIND_VALIDATION_URL ||
-  "https://api.mergemind.dev/api/validate-key";
+  "https://mergemind-production.up.railway.app/api/validate-key";
 
 console.log("MergeMind running...");
 

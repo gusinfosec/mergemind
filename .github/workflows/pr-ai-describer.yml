@@ -1,3 +1,4 @@
+
 name: MergeMind AI Engine
 
 on:
@@ -28,5 +29,4 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           MERGEMIND_LICENSE_KEY: ${{ secrets.MERGEMIND_LICENSE_KEY }}
-          # Optional: override the default validation URL if self-hosting the API
-          # MERGEMIND_VALIDATION_URL: ${{ secrets.MERGEMIND_VALIDATION_URL }}
+          MERGEMIND_VALIDATION_URL: https://mergemind-production.up.railway.app/api/validate-key
