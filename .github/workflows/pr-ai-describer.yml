@@ -4,6 +4,12 @@ name: MergeMind AI Engine
 on:
   pull_request:
     types: [opened, synchronize, reopened]
+  workflow_dispatch:
+    inputs:
+      license_key:
+        description: "MergeMind license key to test (overrides secret)"
+        required: false
+        default: ""
 
 jobs:
   describe:
@@ -28,5 +34,5 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-          MERGEMIND_LICENSE_KEY: ${{ secrets.MERGEMIND_LICENSE_KEY }}
+          MERGEMIND_LICENSE_KEY: ${{ github.event.inputs.license_key || secrets.MERGEMIND_LICENSE_KEY }}
           MERGEMIND_VALIDATION_URL: https://mergemind-production.up.railway.app/api/validate-key
