@@ -1,42 +1,37 @@
  import type { Request, Response } from "express";
 import Stripe from "stripe";
-import { randomUUID } from "crypto";
-import fs from "fs";
-import path from "path";
+import { createLicense } from "../lib/keyStore";
+import type { Plan } from "../lib/keyStore";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "", {
-  // Use the version your installed stripe types expect
   apiVersion: "2023-10-16",
 });
 
-const DATA_DIR = path.join(process.cwd(), "api", "data");
-const CSV_PATH = path.join(DATA_DIR, "licenses.csv");
+// Map your Stripe price IDs to internal plan names via env vars.
+// e.g. PRICE_PRO_MONTHLY=price_xxx  PRICE_TEAM_MONTHLY=price_yyy
+function resolvePlan(session: Stripe.Checkout.Session): Plan {
+  const priceId =
+    session.metadata?.price_id ||
+    (session as any).display_items?.[0]?.price?.id ||
+    "";
 
-function ensureStore() {
-  if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
-  if (!fs.existsSync(CSV_PATH)) {
-    fs.writeFileSync(CSV_PATH, "email,license,created\n", "utf8");
-  }
+  if (priceId && priceId === process.env.PRICE_TEAM_MONTHLY) return "team";
+  if (priceId && priceId === process.env.PRICE_PRO_MONTHLY) return "pro";
+
+  // Fallback: infer from session metadata set at checkout creation time
+  const metaPlan = (session.metadata?.plan || "").toLowerCase();
+  if (metaPlan === "team") return "team";
+  if (metaPlan === "pro") return "pro";
+
+  return "pro"; // safe default for paid sessions
 }
 
-function appendLicense(email: string, key: string) {
-  ensureStore();
-  const row = `${email},${key},${new Date().toISOString()}\n`;
-  fs.appendFileSync(CSV_PATH, row, "utf8");
-}
-
-async function sendLicenseEmail(email: string, license: string) {
-  // TODO: wire Nodemailer here; for now, log for visibility.
-  console.log(`[email] would send to ${email}: ${license}`);
-}
-
-// 👉 Make handler ASYNC so we can await safely.
 const handler = async (req: Request, res: Response) => {
   try {
     const sig = req.headers["stripe-signature"] as string;
     const whsec = process.env.STRIPE_WEBHOOK_SECRET || "";
     if (!whsec) {
-      console.error("Webhook secret missing");
+      console.error("[webhook] STRIPE_WEBHOOK_SECRET not set");
       return res.status(500).send("whsec missing");
     }
 
@@ -52,19 +47,20 @@ const handler = async (req: Request, res: Response) => {
     if (event.type === "checkout.session.completed") {
       const session = event.data.object as Stripe.Checkout.Session;
       const email = session.customer_details?.email || session.customer_email;
+
       if (!email) {
-        console.warn("[license] no email on session");
+        console.warn("[license] no email on session — skipping");
       } else {
-        const license = randomUUID();
-        appendLicense(email, license);
-        await sendLicenseEmail(email, license);
-        console.log("[license] issued + emailed", { email, license });
+        const plan = resolvePlan(session);
+        const record = createLicense(email, plan);
+        // TODO: wire sendLicenseEmail(email, record.key, plan) once SMTP is configured
+        console.log(`[license] issued ${plan} key for ${email}: ${record.key}`);
       }
     }
 
     return res.status(200).send("ok");
   } catch (e: any) {
-    console.error("[webhook] verification/handler error:", e?.message || e);
+    console.error("[webhook] error:", e?.message || e);
     return res.status(400).send(`Webhook Error: ${e.message || "unknown"}`);
   }
 };

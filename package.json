@@ -4,7 +4,8 @@
   "type": "module",
   "main": "src/action.js",
   "scripts": {
-    "start": "node src/action.js"
+    "start": "node src/action.js",
+    "test:local": "node src/index.js"
   },
   "dependencies": {
     "@octokit/rest": "^20.0.0",

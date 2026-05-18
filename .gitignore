@@ -1,6 +1,7 @@
 # more secrets
 dist
 api/data/*.csv
+api/data/*.json
 
 # Secrets
 .env
@@ -24,17 +25,11 @@ node_modules/
 
 services/stripe/data
 
-# secrets
-.env
-
 # runtime
 data/
-data/keys.json
 
 # build
 dist/
 node_modules/
-src/keys.js
-
 
 *~

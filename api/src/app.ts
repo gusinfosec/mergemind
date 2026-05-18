@@ -40,6 +40,7 @@ app.use(
 // --- Routes (import AFTER env so they can read process.env) ---
 import billingRoutes from "./routes/billing";
 import webhookHandler from "./routes/stripe-webhook";
+import licenseRoutes from "./routes/license";
 
 // Stripe webhook MUST use raw body and be mounted BEFORE express.json
 app.post(
@@ -51,8 +52,9 @@ app.post(
 // Normal JSON for all other routes
 app.use(express.json());
 
-// Other API routes
+// API routes
 app.use("/api", billingRoutes);
+app.use("/api", licenseRoutes);
 
 // Health check
 app.get("/", (_req, res) => res.send("OK"));

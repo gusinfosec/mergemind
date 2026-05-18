@@ -1,4 +1,3 @@
-
 name: MergeMind AI Engine
 
 on:
@@ -12,11 +11,13 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version: 20
 
       - name: Install dependencies
         run: npm install
@@ -26,4 +27,6 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-          MERGEMIND_API_KEY: ${{ secrets.MERGEMIND_API_KEY }}
+          MERGEMIND_LICENSE_KEY: ${{ secrets.MERGEMIND_LICENSE_KEY }}
+          # Optional: override the default validation URL if self-hosting the API
+          # MERGEMIND_VALIDATION_URL: ${{ secrets.MERGEMIND_VALIDATION_URL }}
