@@ -4,6 +4,8 @@ name: MergeMind AI Engine
 on:
   pull_request:
     types: [opened, synchronize, reopened]
+  push:
+    branches: [main]
   workflow_dispatch:
     inputs:
       license_key:

@@ -63,6 +63,11 @@ async function run() {
     process.exit(1);
   }
 
+  if (!diff.trim()) {
+    console.log("No diff to analyze — skipping.");
+    process.exit(0);
+  }
+
   if (!isPro) {
     diff = diff.slice(0, 2000);
   }

@@ -39,18 +39,29 @@ For every pull request, MergeMind generates:
 
 Updated some files and fixed bugs
 
-**After (MergeMind)**
+**After (MergeMind Pro)**
 
+## PR Title
 feat(auth): enforce MFA validation and improve session handling
 
+## Summary
 - Added MFA enforcement
 - Improved session timeout logic
 - Updated validation middleware
 
-**Risk Level:** High
-**SOX Mapping:** CC6.1 — Logical access controls
-**Control Gap:** MFA enforcement not covered by existing test suite
-**Recommendation:** Add integration tests before merging to main
+## Risk Level
+High
+
+## Compliance Mapping
+- SOX: CC6.1 — Logical access controls
+- SOC2: CC6.1 — Logical and physical access controls
+- ISO27001: A.9.4 — System and application access control
+
+## Control Gaps
+- MFA enforcement not covered by existing test suite
+
+## Recommendations
+- Add integration tests for MFA flow before merging to main
 
 ---
 
@@ -67,13 +78,15 @@ feat(auth): enforce MFA validation and improve session handling
 
 ---
 
-## MergeMind Pro — $29 one-time
+## MergeMind Pro
 
 <p align="center">
   <a href="https://buy.stripe.com/4gM3cva2sfd54bD12ffbq08">
-    <img src="https://img.shields.io/badge/Buy%20Pro-Stripe-blue?style=for-the-badge&logo=stripe" />
+    <img src="https://img.shields.io/badge/Get%20Pro-Stripe-blue?style=for-the-badge&logo=stripe" />
   </a>
 </p>
+
+Monthly subscription — [view pricing at mergemind.dev](https://mergemind.dev)
 
 ---
 
@@ -98,21 +111,40 @@ MERGEMIND_LICENSE_KEY=your_key_here
 1. Add this workflow to `.github/workflows/mergemind.yml` in your repo:
 
 ```yaml
-name: MergeMind PR Describer
+name: MergeMind PR Analysis
 on:
   pull_request:
-    types: [opened, synchronize]
+    types: [opened, synchronize, reopened]
 
 jobs:
-  describe:
+  analyze:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - name: Run MergeMind
-        uses: gusinfosec/mergemind@main
+      - name: Checkout your repo
+        uses: actions/checkout@v4
         with:
-          openai_api_key: ${{ secrets.OPENAI_API_KEY }}
-          mergemind_license_key: ${{ secrets.MERGEMIND_LICENSE_KEY }}  # Pro only
+          fetch-depth: 0
+
+      - name: Checkout MergeMind
+        uses: actions/checkout@v4
+        with:
+          repository: gusinfosec/mergemind
+          path: .mergemind
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - run: npm install
+        working-directory: .mergemind
+
+      - name: Run MergeMind
+        run: node .mergemind/src/action.js
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          MERGEMIND_LICENSE_KEY: ${{ secrets.MERGEMIND_LICENSE_KEY }}
+          MERGEMIND_VALIDATION_URL: https://mergemind-production.up.railway.app/api/validate-key
 ```
 
 2. Add your secrets under **Settings → Secrets and variables → Actions**:
@@ -149,10 +181,8 @@ node src/action.js
 
 ---
 
-## License
-
-MIT License
-
----
-
-**Know the compliance risk before the PR merges.**
+<table width="100%"><tr>
+  <td>© 2026 Cyber Global Technologies LLC</td>
+  <td align="center"><a href="docs/">Docs</a> · <a href="CONTRIBUTING.md">Contributing</a> · <a href="./LICENSE">License</a> · <a href="https://github.com/marketplace">GitHub Marketplace</a></td>
+  <td align="right">Built by <a href="https://www.cyberglobal.ai">Fretz Olivares</a> — <a href="https://www.cyberglobal.ai">cyberglobal.ai</a></td>
+</tr></table>
