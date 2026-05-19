@@ -7,7 +7,7 @@
 
 <h1 align="center">MergeMind</h1>
 
-<p align="center"><b>AI-powered pull request summaries, risk insights, and review recommendations — instantly.</b></p>
+<p align="center"><b>Know if your code changes create compliance risk before the PR merges.</b></p>
 
 <p align="center">
   <img src="https://github.com/gusinfosec/mergemind/actions/workflows/pr-ai-describer.yml/badge.svg" />
@@ -18,26 +18,22 @@
 
 ---
 
-**Stop wasting hours writing PR text.**  
-MergeMind analyzes your code changes and generates structured pull request summaries, risk insights, and actionable recommendations — instantly.
+MergeMind is a GitHub Action that analyzes your PR diffs and maps code changes to compliance controls — so audit findings surface in the pull request, not after the deployment.
 
 ---
 
-## 🚀 What is MergeMind?
+## What MergeMind Does
 
-MergeMind is a GitHub Action that transforms raw diffs into:
+For every pull request, MergeMind generates:
 
-- PR titles  
-- structured summaries  
-- key changes  
-- **risk assessment (Low / Medium / High)**  
-- **review recommendations**  
-
-Built for developers, teams, and modern engineering workflows.
+- A structured PR title and summary
+- **Risk level assessment (Low / Medium / High)**
+- **Compliance mapping (SOX, SOC2, ISO 27001)**
+- **Control gap analysis and remediation recommendations**
 
 ---
 
-## ✍️ Before / After
+## Before / After
 
 **Before**
 
@@ -45,66 +41,33 @@ Updated some files and fixed bugs
 
 **After (MergeMind)**
 
-feat(auth): enforce MFA validation and improve session handling  
+feat(auth): enforce MFA validation and improve session handling
 
-- Added MFA enforcement  
-- Improved session timeout logic  
-- Updated validation middleware  
+- Added MFA enforcement
+- Improved session timeout logic
+- Updated validation middleware
 
-**Risk Level:** High  
-**Recommendation:** Validate MFA enforcement and session expiration behavior  
-
----
-
-## ⚡ Features
-
-- AI-generated PR titles and summaries  
-- Automatic code diff analysis  
-- **Risk scoring (Low / Medium / High)**  
-- **Actionable review recommendations**  
-- Clean, structured output for better code reviews  
-- Zero-click GitHub Actions integration  
+**Risk Level:** High
+**SOX Mapping:** CC6.1 — Logical access controls
+**Control Gap:** MFA enforcement not covered by existing test suite
+**Recommendation:** Add integration tests before merging to main
 
 ---
 
-## 💸 Free vs Pro
+## Free vs Pro
 
-Feature | Free | Pro  
---------|------|-----
-AI Summary | Yes | Yes  
-Full Diff Analysis | No | Yes  
-Risk Assessment | Limited | Full  
-Recommendations | Limited | Advanced  
-PR Auto Update | No | Yes  
-
----
-
-## 🔑 MergeMind Pro — $29 (one-time)
-
-Unlock the full experience:
-
-- Full diff analysis (no limits)  
-- Automatic PR description updates  
-- Advanced AI prompts  
-- **Full risk analysis on code changes**  
-- **Detailed recommendations for safer deployments**  
-- Priority improvements  
+| Feature | Free | Pro |
+|---|---|---|
+| PR title + summary | Yes | Yes |
+| Risk level (Low/Med/High) | Yes | Full |
+| Compliance mapping (SOX, SOC2, ISO 27001) | No | Yes |
+| Control gap analysis | No | Yes |
+| Remediation recommendations | No | Yes |
+| Full diff analysis (no token limit) | No | Yes |
 
 ---
 
-## 💰 Get MergeMind Pro
-
-### ☕ Ko-fi
-
-<p align="center">
-  <a href="https://ko-fi.com/s/8fa53b788d">
-    <img src="https://img.shields.io/badge/Pro-$29%20One--Time-orange?style=for-the-badge&logo=buymeacoffee" />
-  </a>
-</p>
-
----
-
-### 💳 Stripe
+## MergeMind Pro — $29 one-time
 
 <p align="center">
   <a href="https://buy.stripe.com/4gM3cva2sfd54bD12ffbq08">
@@ -114,35 +77,25 @@ Unlock the full experience:
 
 ---
 
-## 🔐 How Pro Works
+## How Pro Works
 
-1. Purchase via Ko-fi or Stripe  
-2. Receive your API key  
+1. Purchase via Stripe
+2. Receive your license key
 3. Add it to your repository secrets:
 
 > **Settings → Secrets and variables → Actions → New repository secret**
 
 ```
-MERGEMIND_API_KEY=your_key_here
+MERGEMIND_LICENSE_KEY=your_key_here
 ```
 
-4. Open a PR → MergeMind runs automatically  
+4. Open a PR — MergeMind runs automatically
 
 ---
 
-## 🧠 Access Model
+## Quick Install
 
-This repository provides a **free version for evaluation**.
-
-Pro access is unlocked via:
-- API key (sent after purchase)  
-- Feature unlock (no download required)  
-
----
-
-## ⚙️ Quick Install
-
-1. Add this workflow to your repo at `.github/workflows/mergemind.yml`:
+1. Add this workflow to `.github/workflows/mergemind.yml` in your repo:
 
 ```yaml
 name: MergeMind PR Describer
@@ -154,42 +107,40 @@ jobs:
   describe:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Run MergeMind
         uses: gusinfosec/mergemind@main
         with:
           openai_api_key: ${{ secrets.OPENAI_API_KEY }}
-          mergemind_api_key: ${{ secrets.MERGEMIND_API_KEY }}  # Pro only
+          mergemind_license_key: ${{ secrets.MERGEMIND_LICENSE_KEY }}  # Pro only
 ```
 
 2. Add your secrets under **Settings → Secrets and variables → Actions**:
 
 ```
 OPENAI_API_KEY=sk-...
-MERGEMIND_API_KEY=your_key   # Pro only
+MERGEMIND_LICENSE_KEY=your_key   # Pro only
 ```
 
-3. Open a PR → MergeMind runs automatically  
+3. Open a PR — MergeMind runs automatically.
 
 ---
 
-## 🛡️ Security
+## Security
 
-- Uses GitHub Secrets  
-- No data stored externally  
-- Users control API usage  
+- No code stored externally
+- Runs entirely within your GitHub Actions environment
+- API keys stored as GitHub Secrets
 
 ---
 
-## 🛠 Local Dev
+## Local Dev
 
 ```bash
-git clone https://github.com/gusinfosec/MergeMind.git
-cd MergeMind
+git clone https://github.com/gusinfosec/mergemind.git
+cd mergemind
 npm install
 ```
-
-Run:
 
 ```bash
 export OPENAI_API_KEY="sk-..."
@@ -198,19 +149,10 @@ node src/action.js
 
 ---
 
-## 🧩 Ecosystem
+## License
 
-MergeMind → Developer productivity  
-Compliance AI → Audit automation  
-
-👉 [compliance.cyberlaboratory.cc](https://compliance.cyberlaboratory.cc)  
+MIT License
 
 ---
 
-## 📜 License
-
-MIT License  
-
----
-
-**Build faster. Review smarter. Ship safer.**
+**Know the compliance risk before the PR merges.**
