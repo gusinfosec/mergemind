@@ -12,7 +12,6 @@
 <p align="center">
   <img src="https://github.com/gusinfosec/mergemind/actions/workflows/pr-ai-describer.yml/badge.svg" />
   <img src="https://img.shields.io/badge/License-MIT-green.svg" />
-  <img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg" />
   <img src="https://img.shields.io/github/stars/gusinfosec/mergemind" />
 </p>
 
@@ -86,7 +85,7 @@ High
   </a>
 </p>
 
-Monthly subscription — [view pricing at mergemind.dev](https://mergemind.dev)
+One-time license — $29 via Stripe above.
 
 ---
 
@@ -181,8 +180,4 @@ node src/action.js
 
 ---
 
-<table width="100%"><tr>
-  <td>© 2026 Cyber Global Technologies LLC</td>
-  <td align="center"><a href="docs/">Docs</a> · <a href="CONTRIBUTING.md">Contributing</a> · <a href="./LICENSE">License</a> · <a href="https://github.com/marketplace">GitHub Marketplace</a></td>
-  <td align="right">Built by <a href="https://www.cyberglobal.ai">Fretz Olivares</a> — <a href="https://www.cyberglobal.ai">cyberglobal.ai</a></td>
-</tr></table>
+© 2026 Cyber Global Technologies LLC
