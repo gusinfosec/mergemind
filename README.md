@@ -165,19 +165,4 @@ MERGEMIND_LICENSE_KEY=your_key   # Pro only
 
 ---
 
-## Local Dev
-
-```bash
-git clone https://github.com/gusinfosec/mergemind.git
-cd mergemind
-npm install
-```
-
-```bash
-export OPENAI_API_KEY="sk-..."
-node src/action.js
-```
-
----
-
 © 2026 Cyber Global Technologies LLC
