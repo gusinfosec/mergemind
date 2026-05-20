@@ -1,7 +1,0 @@
-diff --git a/hello.js b/hello.js
-index 702f428..6b2b3db 100644
---- a/hello.js
-+++ b/hello.js
-@@ -1 +1 @@
--console.log("hello");
-+console.log("hello world");
