@@ -83,7 +83,7 @@ High
   </a>
 </p>
 
-One-time license — $29 via Stripe above.
+One-time license — $29 via Stripe above · [mergemind.dev](https://mergemind.dev)
 
 ---
 
