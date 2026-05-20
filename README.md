@@ -1,6 +1,6 @@
 <p align="center">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="assets/marketing/mergemind_github.png">
+    <source media="(prefers-color-scheme: dark)" srcset="assets/marketing/mergemind_github_banner.png">
     <img alt="MergeMind Banner" src="assets/marketing/mergemind_github_banner.png" width="100%">
   </picture>
 </p>
