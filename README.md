@@ -162,5 +162,6 @@ MERGEMIND_LICENSE_KEY=your_key   # Pro only
 - API keys stored as GitHub Secrets
 
 ---
-
-© 2026 Cyber Global Technologies LLC
+© 2026 Cyber Global Technologies LLC. All rights reserved.  
+Built by [Fretz Olivares](https://www.linkedin.com/in/fretz-olivares/) — [Cyber Global Technologies](https://cyberglobal.ai)  
+Enterprise inquiries: info@cyberglobal.ai
