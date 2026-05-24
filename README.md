@@ -5,7 +5,8 @@
   </picture>
 </p>
 
-<p align="center"><b>Know if your code changes create compliance risk before the PR merges.</b></p>
+<p align="center"><b>MergeMind analyzes pull request diffs and flags compliance risk before code is merged.</b></p>
+<p align="center"><b>Built for engineering, security, and compliance teams that need audit-aware PR reviews in GitHub Actions.</b></p>
 
 <p align="center">
   <img src="https://github.com/gusinfosec/mergemind/actions/workflows/pr-ai-describer.yml/badge.svg" />
@@ -15,11 +16,13 @@
 
 ---
 
+## Product Description
+
 MergeMind is a GitHub Action that analyzes your PR diffs and maps code changes to compliance controls — so audit findings surface in the pull request, not after the deployment.
 
 ---
 
-## What MergeMind Does
+## Key Features
 
 For every pull request, MergeMind generates:
 
@@ -62,7 +65,7 @@ High
 
 ---
 
-## Free vs Pro
+## Pricing
 
 | Feature | Free | Pro |
 |---|---|---|
@@ -103,7 +106,7 @@ MERGEMIND_LICENSE_KEY=your_key_here
 
 ---
 
-## Quick Install
+## Getting Started
 
 1. Add this workflow to `.github/workflows/mergemind.yml` in your repo:
 
@@ -160,6 +163,12 @@ MERGEMIND_LICENSE_KEY=your_key   # Pro only
 - No code stored externally
 - Runs entirely within your GitHub Actions environment
 - API keys stored as GitHub Secrets
+
+---
+
+## Contact / Support
+
+For support, licensing, or enterprise inquiries, contact **team@mergemind.dev**.
 
 ---
 © 2026 Cyber Global Technologies LLC. All rights reserved.  
