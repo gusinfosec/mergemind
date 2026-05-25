@@ -14,7 +14,7 @@ router.post("/checkout", async (req, res) => {
 
     const price =
       priceId ||
-      (plan === "pro_monthly" ? process.env.PRICE_PRO_MONTHLY : undefined);
+      (plan === "license" ? process.env.PRICE_LICENSE : undefined);
 
     if (!price) return res.status(400).json({ error: "Unknown plan/priceId" });
     if (!email) return res.status(400).json({ error: "email required" });

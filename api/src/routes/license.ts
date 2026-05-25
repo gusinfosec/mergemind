@@ -69,10 +69,10 @@ router.post("/admin/keys", requireAdmin, (req: Request, res: Response) => {
 
   if (!email) return res.status(400).json({ error: "email required" });
 
-  const validPlans: Plan[] = ["free", "pro", "team"];
+  const validPlans: Plan[] = ["free", "license", "team"];
   const resolvedPlan: Plan = validPlans.includes(plan as Plan)
     ? (plan as Plan)
-    : "pro";
+    : "license";
 
   const record = createLicense(email, resolvedPlan);
   console.log(`[admin] created ${resolvedPlan} key for ${email}: ${record.key}`);

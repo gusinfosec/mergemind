@@ -2,7 +2,7 @@ import fs from "fs";
 import path from "path";
 import { randomBytes } from "crypto";
 
-export type Plan = "free" | "pro" | "team";
+export type Plan = "free" | "license" | "team";
 
 export interface LicenseRecord {
   key: string;

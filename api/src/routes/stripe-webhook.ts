@@ -8,7 +8,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "", {
 });
 
 // Map your Stripe price IDs to internal plan names via env vars.
-// e.g. PRICE_PRO_MONTHLY=price_xxx  PRICE_TEAM_MONTHLY=price_yyy
+// e.g. PRICE_LICENSE=price_xxx  PRICE_TEAM_MONTHLY=price_yyy
 function resolvePlan(session: Stripe.Checkout.Session): Plan {
   const priceId =
     session.metadata?.price_id ||
@@ -16,14 +16,14 @@ function resolvePlan(session: Stripe.Checkout.Session): Plan {
     "";
 
   if (priceId && priceId === process.env.PRICE_TEAM_MONTHLY) return "team";
-  if (priceId && priceId === process.env.PRICE_PRO_MONTHLY) return "pro";
+  if (priceId && priceId === process.env.PRICE_LICENSE) return "license";
 
   // Fallback: infer from session metadata set at checkout creation time
   const metaPlan = (session.metadata?.plan || "").toLowerCase();
   if (metaPlan === "team") return "team";
-  if (metaPlan === "pro") return "pro";
+  if (metaPlan === "pro" || metaPlan === "license") return "license";
 
-  return "pro"; // safe default for paid sessions
+  return "license"; // safe default for paid sessions
 }
 
 const handler = async (req: Request, res: Response) => {

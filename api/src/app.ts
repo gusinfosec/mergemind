@@ -24,7 +24,7 @@ for (const p of envCandidates) {
 // Visible boot diagnostics
 console.log("[ENV] loaded .env from:", loadedFrom);
 console.log("[ENV] __dirname:", __dirname);
-console.log("DEBUG boot: PRICE_PRO_MONTHLY =", process.env.PRICE_PRO_MONTHLY);
+console.log("DEBUG boot: PRICE_LICENSE =", process.env.PRICE_LICENSE);
 
 // --- App setup ---
 const app = express();

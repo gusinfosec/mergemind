@@ -39,7 +39,7 @@ For every pull request, MergeMind generates:
 
 Updated some files and fixed bugs
 
-**After (MergeMind Pro)**
+**After (MergeMind)**
 
 ## PR Title
 feat(auth): enforce MFA validation and improve session handling
@@ -67,7 +67,7 @@ High
 
 ## Pricing
 
-| Feature | Free | Pro |
+| Feature | Free | License |
 |---|---|---|
 | PR title + summary | Yes | Yes |
 | Risk level (Low/Med/High) | Yes | Full |
@@ -78,11 +78,11 @@ High
 
 ---
 
-## MergeMind Pro
+## MergeMind License
 
 <p align="center">
   <a href="https://buy.stripe.com/4gM3cva2sfd54bD12ffbq08">
-    <img src="https://img.shields.io/badge/Get%20Pro-Stripe-blue?style=for-the-badge&logo=stripe" />
+    <img src="https://img.shields.io/badge/Get%20License-Stripe-blue?style=for-the-badge&logo=stripe" />
   </a>
 </p>
 
@@ -90,7 +90,7 @@ One-time license — $29 via Stripe above · [mergemind.dev](https://mergemind.d
 
 ---
 
-## How Pro Works
+## How It Works
 
 1. Purchase via Stripe
 2. Receive your license key
@@ -151,7 +151,7 @@ jobs:
 
 ```
 OPENAI_API_KEY=sk-...
-MERGEMIND_LICENSE_KEY=your_key   # Pro only
+MERGEMIND_LICENSE_KEY=your_key
 ```
 
 3. Open a PR — MergeMind runs automatically.

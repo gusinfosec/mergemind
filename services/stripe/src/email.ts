@@ -32,8 +32,8 @@ export async function sendLicenseEmail(to: string, licenseKey: string, plan: str
 
 function getDownloadLink(plan: string): string {
   switch (plan.toLowerCase()) {
-    case "pro":
-      return process.env.DOWNLOAD_LINK_PRO || "";
+    case "license":
+      return process.env.DOWNLOAD_LINK_LICENSE || "";
     case "startup":
       return process.env.DOWNLOAD_LINK_STARTUP || "";
     case "enterprise":

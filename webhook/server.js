@@ -39,9 +39,9 @@ app.post(
       const priceId = session.metadata?.price_id || session.display_items?.[0]?.price?.id;
 
       let planName, downloadLink;
-      if (priceId === process.env.PRICE_PRO_MONTHLY) {
-        planName = "Pro";
-        downloadLink = process.env.DOWNLOAD_LINK_PRO;
+      if (priceId === process.env.PRICE_LICENSE) {
+        planName = "MergeMind";
+        downloadLink = process.env.DOWNLOAD_LINK_LICENSE;
       } else if (priceId === process.env.PRICE_STARTUP_MONTHLY) {
         planName = "Startup";
         downloadLink = process.env.DOWNLOAD_LINK_STARTUP;
