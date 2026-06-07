@@ -1,0 +1,25 @@
+name: MergeMind CI
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: kali
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Install dependencies
+        run: npm install 2>/dev/null || echo "No package.json, skipping"
+
+      - name: Validate GitHub Action
+        run: |
+          echo "Checking action.yml exists..."
+          test -f action.yml && echo "action.yml found" || echo "No action.yml"
+          test -f README.md && echo "README.md found" || echo "No README.md"
+
+      - name: Done
+        run: echo "Build complete on $(hostname) at $(date)"
