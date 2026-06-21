@@ -813,5 +813,37 @@
   <p>MIT License</p>
 </footer>
 
+<script>
+(function () {
+  const SUPABASE_URL = "https://seeamzqyctkjmaktfgdx.supabase.co";
+  const SUPABASE_KEY = "sb_publishable_hn2BXf6z93HnulzdwCDdqg_rORXh9bU";
+  const PRODUCT = "mergemind";
+
+  function track(eventType, extra) {
+    const payload = {
+      product: PRODUCT,
+      event_type: eventType,
+      page_path: window.location.pathname,
+      metadata: extra || {}
+    };
+
+    fetch(SUPABASE_URL + "/rest/v1/events", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "apikey": SUPABASE_KEY,
+        "Authorization": "Bearer " + SUPABASE_KEY,
+        "Prefer": "return=minimal"
+      },
+      body: JSON.stringify(payload),
+      keepalive: true
+    }).catch(function () {});
+  }
+
+  track("page_view");
+  window.cgtTrack = track;
+})();
+</script>
+
 </body>
 </html>
