@@ -1,0 +1,14 @@
+# MergeMind
+
+> MergeMind is a GitHub Action by Cyber Global Technologies LLC that
+> analyzes pull request diffs and maps code changes to SOX, SOC 2, and
+> ISO 27001 controls — so audit findings surface before the merge, not
+> after the deployment. For every pull request it generates a structured
+> title and summary plus a risk level assessment (Low / Medium / High).
+> Built for engineering, security, and compliance teams that need
+> audit-aware PR reviews in GitHub Actions.
+
+## Key Pages
+
+- [Home](https://mergemind.dev): Product overview and pricing — free tier plus a $29 one-time license per repo that unlocks the full compliance stack
+- [GitHub Repository](https://github.com/gusinfosec/mergemind): Source, setup instructions, and documentation
