@@ -820,12 +820,26 @@
   const PRODUCT = "mergemind";
 
   function getUTMParams() {
+    const UTM_KEYS = ["utm_source", "utm_medium", "utm_campaign", "utm_content"];
     const params = new URLSearchParams(window.location.search);
-    return {
-      utm_source: params.get("utm_source") || null,
-      utm_medium: params.get("utm_medium") || null,
-      utm_campaign: params.get("utm_campaign") || null
-    };
+    const fromUrl = {};
+    let hasAny = false;
+    UTM_KEYS.forEach(function (k) {
+      const v = params.get(k);
+      fromUrl[k] = v || null;
+      if (v) hasAny = true;
+    });
+    // Persist UTM values from the landing URL so conversion events later
+    // in the session still carry the campaign that brought the visitor.
+    if (hasAny) {
+      try { sessionStorage.setItem("cgt_utm", JSON.stringify(fromUrl)); } catch (e) {}
+      return fromUrl;
+    }
+    try {
+      const stored = JSON.parse(sessionStorage.getItem("cgt_utm"));
+      if (stored) return stored;
+    } catch (e) {}
+    return fromUrl;
   }
 
   function getCountry() {
