@@ -6,7 +6,7 @@
 </p>
 
 <p align="center"><b>MergeMind analyzes pull request diffs and flags compliance risk before code is merged.</b></p>
-<p align="center"><b>Built for engineering, security, and compliance teams that need audit-aware PR reviews in GitHub Actions.</b></p>
+<p align="center"><b>Built for engineering, security, and compliance teams that need audit-aware merge request reviews in GitHub Actions and GitLab CI.</b></p>
 
 <p align="center">
   <img src="https://github.com/gusinfosec/mergemind/actions/workflows/pr-ai-describer.yml/badge.svg" />
@@ -155,6 +155,18 @@ MERGEMIND_LICENSE_KEY=your_key
 ```
 
 3. Open a PR — MergeMind runs automatically.
+
+### Using MergeMind on GitLab CI
+
+Copy [`examples/gitlab-ci.yml`](examples/gitlab-ci.yml) into your repo as `.gitlab-ci.yml` (or merge the `mergemind` job into your existing file). Add these CI/CD variables under **Project → Settings → CI/CD → Variables**:
+
+```
+OPENAI_API_KEY=sk-...
+MERGEMIND_GITLAB_TOKEN=glpat-...   # PAT with `api` scope (posts MR notes)
+MERGEMIND_LICENSE_KEY=your_key     # optional, free tier works without it
+```
+
+For self-managed GitLab, also set `MERGEMIND_GITLAB_HOST` (defaults to `https://gitlab.com`). Open a merge request — MergeMind analyzes the diff and posts the compliance assessment as an MR note.
 
 ---
 
