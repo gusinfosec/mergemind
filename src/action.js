@@ -90,7 +90,12 @@ async function postGitlabNote(output) {
           "PRIVATE-TOKEN": token,
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ body: output.slice(0, 10000) }),
+        body: JSON.stringify({
+          body:
+            output.length > 10000
+              ? output.slice(0, 10000) + "\n\n… (truncated — see job log for full output)"
+              : output,
+        }),
         signal: AbortSignal.timeout(15000),
       }
     );

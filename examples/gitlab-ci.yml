@@ -2,15 +2,16 @@
 # MergeMind for GitLab CI
 # Maps merge-request diffs to SOX / SOC 2 / ISO 27001 controls and posts the
 # analysis as an MR note. Copy this file into your repo as `.gitlab-ci.yml`
-# (or merge it into your existing one).
+# (or merge the `mergemind` job into your existing one).
 #
 # Required CI/CD variables (Project → Settings → CI/CD → Variables):
 #   OPENAI_API_KEY          — your OpenAI key
-#   MERGEMIND_GITLAB_TOKEN  — GitLab PAT with `api` scope (to post MR notes).
-#                             For self-managed GitLab, add MERGEMIND_GITLAB_HOST
-#                             (defaults to gitlab.com).
+#   MERGEMIND_GITLAB_TOKEN  — GitLab PAT with `api` scope (posts MR notes).
+#                             CI_JOB_TOKEN is used as a fallback but usually
+#                             lacks note permissions, so a PAT is recommended.
 # Optional:
 #   MERGEMIND_LICENSE_KEY   — from mergemind.dev (free tier works without it)
+#   MERGEMIND_GITLAB_HOST   — self-managed GitLab base URL (default gitlab.com)
 #   MERGEMIND_VALIDATION_URL — override license validation endpoint
 # ─────────────────────────────────────────────────────────────────────────────
 
@@ -21,7 +22,7 @@ mergemind:
   stage: mergemind
   image: node:20
   rules:
-    # Run on merge requests targeting main (or your default branch).
+    # Run on merge requests targeting your default branch.
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
     # Allow manual trigger on any branch for a quick check.
     - if: '$CI_COMMIT_BRANCH'
@@ -30,5 +31,8 @@ mergemind:
     # Full history so the diff range resolves (GitLab shallow-clones by default).
     GIT_DEPTH: 0
   script:
+    # MergeMind lives in its own repo — check it out into a subfolder.
+    - git clone --depth 1 https://github.com/gusinfosec/mergemind.git .mergemind
+    - cd .mergemind
     - npm install --no-audit --no-fund
     - node src/action.js

@@ -158,7 +158,7 @@ MERGEMIND_LICENSE_KEY=your_key
 
 ### Using MergeMind on GitLab CI
 
-Copy [`examples/gitlab-ci.yml`](examples/gitlab-ci.yml) into your repo as `.gitlab-ci.yml` (or merge the `mergemind` job into your existing file). Add these CI/CD variables under **Project → Settings → CI/CD → Variables**:
+Copy [`examples/gitlab-ci.yml`](examples/gitlab-ci.yml) into your repo as `.gitlab-ci.yml` (or merge the `mergemind` job into your existing file). The job checks out MergeMind from GitHub into `.mergemind` and runs the analysis there, so no extra files are needed in your repo. Add these CI/CD variables under **Project → Settings → CI/CD → Variables**:
 
 ```
 OPENAI_API_KEY=sk-...
