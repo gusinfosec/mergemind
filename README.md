@@ -18,7 +18,7 @@
 
 ## Product Description
 
-MergeMind is a GitHub Action that analyzes your PR diffs and maps code changes to compliance controls — so audit findings surface in the pull request, not after the deployment.
+MergeMind runs in GitHub Actions and GitLab CI, analyzes your pull/merge request diffs and maps code changes to compliance controls — so audit findings surface before the merge, not after the deployment.
 
 ---
 
