@@ -57,12 +57,15 @@ const handler = async (req: Request, res: Response) => {
         console.log(`[license] issued ${plan} key for ${email}: ${record.key}`);
 
         // CGT analytics: record the signup (fire-and-forget, never blocks the webhook)
+        // Supabase anon key comes from env (SUPABASE_ANON_KEY) - never hardcode.
+        const anonKey = process.env.SUPABASE_ANON_KEY;
+        if (anonKey) {
         fetch("https://seeamzqyctkjmaktfgdx.supabase.co/rest/v1/events", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            apikey: "sb_publishable_hn2BXf6z93HnulzdwCDdqg_rORXh9bU",
-            Authorization: "Bearer sb_publishable_hn2BXf6z93HnulzdwCDdqg_rORXh9bU",
+            apikey: anonKey,
+            Authorization: "Bearer " + anonKey,
             Prefer: "return=minimal",
           },
           body: JSON.stringify({
@@ -75,6 +78,7 @@ const handler = async (req: Request, res: Response) => {
             metadata: { plan, email, test: session.livemode === false },
           }),
         }).catch((e: any) => console.error("[analytics] signup failed:", e?.message || e));
+        }
       }
     }
 
