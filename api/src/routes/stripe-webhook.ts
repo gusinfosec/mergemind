@@ -69,7 +69,10 @@ const handler = async (req: Request, res: Response) => {
             product: "mergemind",
             event_type: "signup",
             page_path: "/checkout",
-            metadata: { plan, email },
+            // test=true when the event came from Stripe test mode (livemode
+            // false) — the dashboard filters these out so verification runs
+            // never pollute real analytics.
+            metadata: { plan, email, test: session.livemode === false },
           }),
         }).catch((e: any) => console.error("[analytics] signup failed:", e?.message || e));
       }
