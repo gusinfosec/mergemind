@@ -55,6 +55,23 @@ const handler = async (req: Request, res: Response) => {
         const record = createLicense(email, plan);
         // TODO: wire sendLicenseEmail(email, record.key, plan) once SMTP is configured
         console.log(`[license] issued ${plan} key for ${email}: ${record.key}`);
+
+        // CGT analytics: record the signup (fire-and-forget, never blocks the webhook)
+        fetch("https://seeamzqyctkjmaktfgdx.supabase.co/rest/v1/events", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            apikey: "sb_publishable_hn2BXf6z93HnulzdwCDdqg_rORXh9bU",
+            Authorization: "Bearer sb_publishable_hn2BXf6z93HnulzdwCDdqg_rORXh9bU",
+            Prefer: "return=minimal",
+          },
+          body: JSON.stringify({
+            product: "mergemind",
+            event_type: "signup",
+            page_path: "/checkout",
+            metadata: { plan, email },
+          }),
+        }).catch((e: any) => console.error("[analytics] signup failed:", e?.message || e));
       }
     }
 

@@ -35,11 +35,25 @@ ssh riverstone 'cd ~/mergemind && docker compose up -d --build'
 | `KEYS_DB_PATH` | `/data/keys.json` (persisted volume) |
 | `ADMIN_SECRET` | hex — used for `x-admin-secret` on admin routes |
 | `STRIPE_SECRET_KEY` | shared CGT live key |
-| `STRIPE_WEBHOOK_SECRET` | whsec — verify matches the Stripe endpoint |
+| `STRIPE_WEBHOOK_SECRET` | whsec — **Aug 11: recreated with the new endpoint** (matches `we_1U3LXEFnIuEgeFxObRhchTq8`) |
 | `PRICE_LICENSE` | `price_1TRfl1FnIuEgeFxOKGsbD1Ph` |
+
+## Stripe webhook (Aug 11, 2026)
+
+- **Endpoint `we_1U3LXEFnIuEgeFxObRhchTq8`** (created via API) →
+  `https://api.mergemind.dev/api/stripe/webhook`
+- Event: `checkout.session.completed` · API version: `2026-04-22.dahlia`
+  (matches inboxsafe; account is at the 3-unique-version limit)
+- Secret: `whsec_...` in `~/mergemind/api.env` — regenerated at creation, already
+  set. Signed test event verified end-to-end (license issued, then test key
+  removed from `~/mergemind/data/keys.json`).
+- ⚠️ After changing `api.env`, run `docker compose up -d --force-recreate`
+  (a plain `docker restart` does NOT re-read `env_file`).
 
 > ⚠️ `ADMIN_SECRET` and the Stripe keys were regenerated/pulled from the shared CGT account
 > during the Aug 11 migration because the Railway env was unrecoverable.
+> The Stripe webhook endpoint itself did not exist on the account before Aug 11 —
+> it was created during this migration (see below).
 
 ## Public URL (`api.mergemind.dev`)
 
