@@ -144,7 +144,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           MERGEMIND_LICENSE_KEY: ${{ secrets.MERGEMIND_LICENSE_KEY }}
-          MERGEMIND_VALIDATION_URL: https://mergemind-production.up.railway.app/api/validate-key
+          MERGEMIND_VALIDATION_URL: https://api.mergemind.dev/api/validate-key
 ```
 
 2. Add your secrets under **Settings → Secrets and variables → Actions**:

@@ -4,7 +4,7 @@ const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 const MERGEMIND_LICENSE_KEY = process.env.MERGEMIND_LICENSE_KEY;
 const MERGEMIND_VALIDATION_URL =
   process.env.MERGEMIND_VALIDATION_URL ||
-  "https://mergemind-production.up.railway.app/api/validate-key";
+  "https://api.mergemind.dev/api/validate-key";
 
 // ── Platform detection ─────────────────────────────────────────────────────
 // GitLab CI sets these vars on merge-request pipelines; GitHub Actions does

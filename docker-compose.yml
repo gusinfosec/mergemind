@@ -1,0 +1,14 @@
+# MergeMind API — riverstone compose (mirrors vendorsafe pattern)
+# Deploy: rsync repo to riverstone:~/projects/mergemind, then here:
+#   cd ~/mergemind && docker compose up -d --build
+services:
+  mergemind-api:
+    build:
+      context: ../projects/mergemind/api
+    container_name: mergemind-api
+    restart: unless-stopped
+    env_file: ./api.env
+    ports:
+      - "127.0.0.1:3004:3000"
+    volumes:
+      - ./data:/data:z
