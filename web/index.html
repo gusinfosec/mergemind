@@ -883,6 +883,33 @@
       .catch(function () { return "XX"; });
   }
 
+    function getVisitorId() {
+      try {
+        var v = localStorage.getItem("cgt_vid");
+        if (!v) {
+          v = (typeof crypto !== "undefined" && crypto.randomUUID)
+            ? crypto.randomUUID()
+            : "v-" + Date.now() + "-" + Math.random().toString(36).slice(2);
+          localStorage.setItem("cgt_vid", v);
+        }
+        return v;
+      } catch (e) { return null; }
+    }
+
+    function getSessionId() {
+      try {
+        var now = Date.now();
+        var s = null;
+        try { s = JSON.parse(localStorage.getItem("cgt_sess")); } catch (e) {}
+        if (s && (now - s.ts) < 30 * 60 * 1000) return s.id;
+        var id = (typeof crypto !== "undefined" && crypto.randomUUID)
+          ? crypto.randomUUID()
+          : "s-" + now + "-" + Math.random().toString(36).slice(2);
+        localStorage.setItem("cgt_sess", JSON.stringify({ id: id, ts: now }));
+        return id;
+      } catch (e) { return null; }
+    }
+
   function track(eventType, extra) {
     getCountry().then(function (country) {
       const payload = {
@@ -894,7 +921,9 @@
           {
             referrer: document.referrer || null,
             user_agent: navigator.userAgent,
-            screen_width: window.screen.width
+            screen_width: window.screen.width,
+            visitor_id: getVisitorId(),
+            session_id: getSessionId()
           },
           getUTMParams(),
           extra || {}
