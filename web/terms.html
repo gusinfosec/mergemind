@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Terms of Service — MergeMind</title>
+<meta name="description" content="MergeMind terms of service and acceptable use policy.">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" href="/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #060a14; --bg2: #0b1120; --bg3: #101829;
+    --border: rgba(99,130,200,0.12); --border2: rgba(99,130,200,0.22);
+    --blue: #3b82f6; --purple: #a78bfa; --green: #34d399; --amber: #fbbf24;
+    --text: #e2e8f0; --muted: #64748b;
+    --mono: 'JetBrains Mono', monospace; --sans: 'Space Grotesk', sans-serif;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: var(--bg); color: var(--text); font-family: var(--sans); line-height: 1.65; }
+  nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; align-items: center; justify-content: space-between; padding: 0 2rem; height: 60px; background: rgba(6,10,20,0.85); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); }
+  .nav-logo { display: flex; align-items: center; gap: 10px; font-family: var(--sans); font-weight: 700; color: var(--text); text-decoration: none; }
+  .logo-icon { width: 26px; height: 26px; border-radius: 6px; background: linear-gradient(135deg, var(--blue), var(--purple)); display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; color: #fff; }
+  nav a.back { color: var(--muted); text-decoration: none; font-family: var(--mono); font-size: 13px; }
+  nav a.back:hover { color: var(--text); }
+  main { max-width: 720px; margin: 0 auto; padding: 120px 24px 80px; }
+  .eyebrow { font-family: var(--mono); font-size: 11px; letter-spacing: 0.15em; color: var(--blue); text-transform: uppercase; margin-bottom: 16px; }
+  h1 { font-size: 38px; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 8px; }
+  .updated { font-family: var(--mono); font-size: 13px; color: var(--muted); margin-bottom: 40px; padding-bottom: 24px; border-bottom: 1px solid var(--border); }
+  h2 { font-family: var(--mono); font-size: 13px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: var(--purple); margin: 32px 0 10px; }
+  p { color: #b7c1d1; margin-bottom: 14px; }
+  a { color: var(--blue); }
+  footer { border-top: 1px solid var(--border); padding: 28px 24px; text-align: center; font-size: 13px; color: var(--muted); }
+  footer a { color: var(--muted); }
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-logo" href="/"><div class="logo-icon">M</div>MergeMind</a>
+  <a class="back" href="/">← Back to app</a>
+</nav>
+
+<main>
+  <div class="eyebrow">Legal</div>
+  <h1>Terms of Service</h1>
+  <div class="updated">Last updated: August 21, 2026 · Cyber Global Technologies LLC</div>
+
+  <h2>1. What MergeMind Does</h2>
+  <p>MergeMind is a GitHub Action / GitLab CI job that analyzes pull request diffs, generates a PR title and description, and maps code changes to SOX, SOC 2, and ISO 27001 controls. It runs entirely inside your own CI environment using an API key you provide.</p>
+
+  <h2>2. Not Audit or Legal Advice</h2>
+  <p>MergeMind's compliance mappings, risk levels, and control-gap findings are AI-generated and informational only. They do not constitute a certified audit opinion, legal advice, or a guarantee of compliance with any framework. Review all findings before relying on them.</p>
+
+  <h2>3. No Guarantee of Results</h2>
+  <p>Risk levels, control mappings, and remediation suggestions are derived automatically from the diff text supplied to the configured AI provider. MergeMind does not independently verify findings and cannot guarantee completeness or accuracy.</p>
+
+  <h2>4. Acceptable Use</h2>
+  <p>You agree to use MergeMind only on repositories you are authorized to analyze, and to comply with your own organization's data policies when deciding whether to send PR diffs to a third-party AI provider. You agree not to attempt to abuse or overload the underlying AI provider's API through this tool, or to resell the service without written permission.</p>
+
+  <h2>5. Free Tier and Licensing</h2>
+  <p>MergeMind is free to install for GitHub Actions and GitLab CI. A one-time license, purchased via Stripe, unlocks the full compliance stack. We may modify or discontinue the free tier at any time.</p>
+
+  <h2>6. Payments</h2>
+  <p>Licenses are purchased through a Stripe Payment Link. Payment processing is handled entirely by Stripe; we never see or store your card details. Refunds are at our discretion.</p>
+
+  <h2>7. Limitation of Liability</h2>
+  <p>To the maximum extent permitted by law, Cyber Global Technologies LLC is not liable for indirect, incidental, or consequential damages arising from your use of MergeMind, including damages arising from reliance on AI-generated compliance findings that were not independently verified. Total liability is limited to amounts paid in the 30 days prior to any claim.</p>
+
+  <h2>8. Governing Law</h2>
+  <p>These terms are governed by the laws of the State of New Jersey, United States.</p>
+</main>
+
+<footer>
+  © 2026 <a href="https://cyberglobal.ai">Cyber Global Technologies LLC</a> · <a href="/">MergeMind</a> · <a href="mailto:info@cyberglobal.ai">info@cyberglobal.ai</a>
+</footer>
+
+</body>
+</html>
