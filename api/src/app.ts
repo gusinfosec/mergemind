@@ -56,8 +56,17 @@ app.use(express.json());
 app.use("/api", billingRoutes);
 app.use("/api", licenseRoutes);
 
-// Health check
+// Health check — matches the route already live on riverstone (watchdog polls /health)
+const startedAt = Date.now();
 app.get("/", (_req, res) => res.send("OK"));
+app.get("/health", (_req, res) =>
+  res.json({
+    status: "ok",
+    service: "mergemind-api",
+    uptime: Math.round(process.uptime()),
+    startedAt: new Date(startedAt).toISOString(),
+  })
+);
 
 // Start
 const port = Number(process.env.PORT || 3000);

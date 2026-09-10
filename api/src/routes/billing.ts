@@ -1,4 +1,4 @@
- import { Router } from "express";
+import { Router } from "express";
 import Stripe from "stripe";
 
 const router = Router();
@@ -7,6 +7,10 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "", {
   // Match the types bundled with your installed stripe package
   apiVersion: "2023-10-16",
 });
+
+// The public site, not the API host. Success/cancel redirects must land on
+// mergemind.dev (the site), never on api.mergemind.dev.
+const SITE_URL = process.env.SITE_URL || "https://mergemind.dev";
 
 router.post("/checkout", async (req, res) => {
   try {
@@ -19,12 +23,18 @@ router.post("/checkout", async (req, res) => {
     if (!price) return res.status(400).json({ error: "Unknown plan/priceId" });
     if (!email) return res.status(400).json({ error: "email required" });
 
+    // One-time license = single payment. Only recurring plans should be
+    // subscriptions — if a team/monthly plan is added, pass mode explicitly.
+    const isSubscription =
+      (plan === "team" || plan === "pro") && process.env.PRICE_TEAM_MONTHLY;
+
     const session = await stripe.checkout.sessions.create({
-      mode: "subscription",
+      mode: isSubscription ? "subscription" : "payment",
       line_items: [{ price, quantity: 1 }],
       customer_email: email,
-      success_url: (process.env.APP_URL || "http://localhost:5173") + "/success",
-      cancel_url: (process.env.APP_URL || "http://localhost:5173") + "/cancel",
+      metadata: { plan: isSubscription ? "team" : "license" },
+      success_url: SITE_URL + "/success",
+      cancel_url: SITE_URL + "/#pricing",
     });
 
     return res.json({ url: session.url });

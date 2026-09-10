@@ -1,7 +1,8 @@
  import type { Request, Response } from "express";
 import Stripe from "stripe";
-import { createLicense } from "../lib/keyStore";
+import { createLicense, setDeliveryStatus } from "../lib/keyStore";
 import type { Plan } from "../lib/keyStore";
+import { emailConfigured, sendLicenseEmail } from "../lib/email";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "", {
   apiVersion: "2023-10-16",
@@ -53,8 +54,25 @@ const handler = async (req: Request, res: Response) => {
       } else {
         const plan = resolvePlan(session);
         const record = createLicense(email, plan);
-        // TODO: wire sendLicenseEmail(email, record.key, plan) once SMTP is configured
         console.log(`[license] issued ${plan} key for ${email}: ${record.key}`);
+
+        // Deliver the license key by email. Never let an email failure block or
+        // fail the webhook (Stripe would retry and we'd mint a duplicate key) —
+        // log it and record the status so it's visible via /api/admin/keys.
+        try {
+          if (!emailConfigured()) {
+            throw new Error(
+              "RESEND_API_KEY/EMAIL_FROM not set — key not emailed (retrieve via /api/admin/keys)"
+            );
+          }
+          await sendLicenseEmail(email, record.key, plan);
+          setDeliveryStatus(record.key, { sentAt: new Date().toISOString() });
+          console.log(`[license] emailed ${plan} key to ${email}`);
+        } catch (emailErr: any) {
+          const msg = emailErr?.message || "unknown";
+          setDeliveryStatus(record.key, { error: msg });
+          console.error(`[license] email delivery FAILED for ${email}:`, msg);
+        }
 
         // CGT analytics: record the signup (fire-and-forget, never blocks the webhook)
         // Supabase anon key comes from env (SUPABASE_ANON_KEY) - never hardcode.

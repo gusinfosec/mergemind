@@ -650,7 +650,7 @@
     <li><a href="https://github.com/gusinfosec/mergemind" target="_blank">GitHub</a></li>
     <li><a href="/privacy">Privacy</a></li>
   </ul>
-  <a href="https://buy.stripe.com/4gM3cva2sfd54bD12ffbq08" class="nav-cta">Get License →</a>
+  <a href="https://buy.stripe.com/4gM3cva2sfd54bD12ffbq08" class="nav-cta" data-track="checkout_started" data-track-meta='{"plan":"license","source":"nav"}'>Get License →</a>
 </nav>
 
 <!-- HERO -->
@@ -667,7 +667,7 @@
   </p>
 
   <div class="hero-actions">
-    <a href="https://github.com/gusinfosec/mergemind" class="btn-primary" target="_blank">
+    <a href="https://github.com/gusinfosec/mergemind" class="btn-primary" target="_blank" data-track="install_clicked" data-track-meta='{"source":"hero"}'>
       ★ View on GitHub
     </a>
     <a href="#pricing" class="btn-secondary">
@@ -821,7 +821,7 @@
         <li><span class="cross">–</span> Remediation recommendations</li>
         <li><span class="cross">–</span> Full diff analysis</li>
       </ul>
-      <a href="https://github.com/gusinfosec/mergemind" class="pricing-btn outline" target="_blank">Install free →</a>
+      <a href="https://github.com/gusinfosec/mergemind" class="pricing-btn outline" target="_blank" data-track="install_clicked" data-track-meta='{"source":"pricing-free"}'>Install free →</a>
     </div>
 
     <div class="pricing-card featured">
@@ -836,7 +836,7 @@
         <li><span class="check">✓</span> Remediation recommendations</li>
         <li><span class="check">✓</span> Full diff (no token limit)</li>
       </ul>
-      <a href="https://buy.stripe.com/4gM3cva2sfd54bD12ffbq08" class="pricing-btn filled" target="_blank">Get License — $29 →</a>
+      <a href="https://buy.stripe.com/4gM3cva2sfd54bD12ffbq08" class="pricing-btn filled" target="_blank" data-track="checkout_started" data-track-meta='{"plan":"license","source":"pricing"}'>Get License — $29 →</a>
     </div>
   </div>
 </section>
@@ -947,6 +947,17 @@
 
   track("page_view");
   window.cgtTrack = track;
+
+  // Conversion funnel events: any element with [data-track] fires a tracked
+  // event on click. Meta (e.g. plan, source) comes from data-track-meta JSON.
+  document.querySelectorAll("[data-track]").forEach(function (el) {
+    el.addEventListener("click", function () {
+      var eventType = el.getAttribute("data-track");
+      var meta = {};
+      try { meta = JSON.parse(el.getAttribute("data-track-meta") || "{}"); } catch (e) {}
+      window.cgtTrack(eventType, meta);
+    });
+  });
 })();
 </script>
 

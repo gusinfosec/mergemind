@@ -37,6 +37,9 @@ ssh riverstone 'cd ~/mergemind && docker compose up -d --build'
 | `STRIPE_SECRET_KEY` | shared CGT live key |
 | `STRIPE_WEBHOOK_SECRET` | whsec — **Aug 11: recreated with the new endpoint** (matches `we_1U3LXEFnIuEgeFxObRhchTq8`) |
 | `PRICE_LICENSE` | `price_1TRfl1FnIuEgeFxOKGsbD1Ph` |
+| `SITE_URL` | `https://mergemind.dev` — checkout success/cancel redirects (never the API host) |
+| `RESEND_API_KEY` | shared CGT Resend key (same as compliance-ai/review-site) — **license email delivery** |
+| `EMAIL_FROM` | `noreply@cyberglobal.ai` — domain must be verified in Resend |
 
 ## Stripe webhook (Aug 11, 2026)
 
@@ -63,6 +66,23 @@ ssh riverstone 'cd ~/mergemind && docker compose up -d --build'
   (re-attach after recreating cloudflared: `docker network connect mergemind_default cloudflared`)
 - `src/action.js`, `README.md`, `.github/workflows/pr-ai-describer.yml`, and `api/.env.example`
   already default to `https://api.mergemind.dev/api/validate-key`.
+
+## License key delivery (email, added Sep 2026)
+
+On `checkout.session.completed` the webhook now:
+
+1. Creates the license record in `keys.json` (as before).
+2. Emails the key to the buyer via **Resend** (`RESEND_API_KEY` / `EMAIL_FROM`).
+3. Records delivery status on the record (`delivery.sentAt` or `delivery.error`) —
+   visible via `GET /api/admin/keys`.
+
+Email failures never fail the webhook (Stripe would retry and mint a duplicate
+key). If `RESEND_API_KEY`/`EMAIL_FROM` are unset, the webhook logs a warning and
+marks `delivery.error` — the key is still retrievable via the admin API.
+
+Buyers land on **`https://mergemind.dev/success`** after checkout (see `web/success.html`)
+which explains the email + setup steps. `GET /api/checkout` is fixed to `mode: payment`
+for the one-time license and redirects to `SITE_URL` (not the API host).
 
 ## Smoke test (from riverstone)
 

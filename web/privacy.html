@@ -52,7 +52,7 @@
   <div class="updated">Last updated: August 21, 2026 · Cyber Global Technologies LLC</div>
 
   <div class="callout">
-    <p><strong>The short version:</strong> MergeMind is a CI action — it has no server of its own. When it runs, your PR diff is sent to OpenAI's API to generate the analysis. MergeMind does not store or log your code anywhere beyond your own repo's GitHub Actions / GitLab CI run history, which you control.</p>
+    <p><strong>The short version:</strong> MergeMind is a CI action — your PR diff is sent directly to OpenAI's API to generate the analysis, and MergeMind never stores or logs your code. The only data MergeMind keeps is what's needed to deliver and validate licenses: the checkout email and your license key.</p>
   </div>
 
   <h2>1. Who We Are</h2>
@@ -71,7 +71,8 @@
   <p>Data sent to OpenAI is subject to OpenAI's own API terms and data usage policies. Consult OpenAI's documentation for their current defaults on retention and model training.</p>
 
   <h2>4. Data Retention</h2>
-  <p>MergeMind does not operate a server or database — there is nothing on our side to retain. Any record of a run exists only in your own GitHub Actions or GitLab CI run history, governed by your own repository's log retention settings.</p>
+  <p>Your PR diffs are never stored by MergeMind — they go directly from your CI environment to the LLM provider you configured, and the only record of a run lives in your own GitHub Actions or GitLab CI run history.</p>
+  <p>The only data MergeMind stores is what's needed to deliver and validate licenses: the email address used at checkout, the license key, and the plan purchased. This is kept in a small key store operated by MergeMind. You can request access, correction, or deletion of this data at any time (see Section 8).</p>
 
   <h2>5. Your Responsibilities</h2>
   <p>You are responsible for ensuring your organization's data policy permits sending PR diffs to your chosen LLM provider. If your repository may contain sensitive content unsuitable for a third-party AI provider, exclude or mask those files from the diff before MergeMind runs (e.g., via your own CI filtering).</p>
@@ -80,7 +81,7 @@
   <p>The GitHub Action requests only the minimum permissions it needs (<code>pull-requests: write</code>). Never commit your <code>OPENAI_API_KEY</code> or <code>MERGEMIND_LICENSE_KEY</code> to your repository — always store them as CI secrets.</p>
 
   <h2>7. Payment Information</h2>
-  <p>License purchases are processed by Stripe via a Stripe Payment Link. We never see or store your card details.</p>
+  <p>License purchases are processed by Stripe via a Stripe Payment Link. We never see or store your card details. After checkout, we send the license key to the email address you provided at checkout; Stripe also sends you a receipt.</p>
 
   <h2>8. Your Rights</h2>
   <p>You may request access to, correction of, or deletion of any account/license data we hold by emailing <a href="mailto:info@cyberglobal.ai">info@cyberglobal.ai</a>. Because PR diff content is never stored by MergeMind, there is nothing to delete on that front.</p>

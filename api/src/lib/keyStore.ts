@@ -10,6 +10,11 @@ export interface LicenseRecord {
   plan: Plan;
   createdAt: string;
   active: boolean;
+  /** Delivery status of the license email (filled by the webhook after checkout). */
+  delivery?: {
+    sentAt?: string;
+    error?: string;
+  };
 }
 
 interface Store {
@@ -69,6 +74,16 @@ export function revokeKey(key: string): boolean {
   store.keys[key].active = false;
   write(store);
   return true;
+}
+
+export function setDeliveryStatus(
+  key: string,
+  status: { sentAt?: string; error?: string }
+): void {
+  const store = read();
+  if (!store.keys[key]) return;
+  store.keys[key].delivery = status;
+  write(store);
 }
 
 export function listLicenses(): LicenseRecord[] {
