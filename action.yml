@@ -1,0 +1,70 @@
+# MergeMind — compliance-aware PR analysis as a GitHub Action.
+#
+# Usage (in your repo's .github/workflows/mergemind.yml):
+#
+#   name: MergeMind PR Analysis
+#   on:
+#     pull_request:
+#       types: [opened, synchronize, reopened]
+#   permissions:
+#     contents: read
+#     pull-requests: write
+#   jobs:
+#     analyze:
+#       runs-on: ubuntu-latest
+#       steps:
+#         - uses: actions/checkout@v4
+#           with:
+#             fetch-depth: 0   # full history so the diff range resolves
+#         - uses: gusinfosec/mergemind@v1
+#           with:
+#             openai_api_key: ${{ secrets.OPENAI_API_KEY }}
+#             license_key: ${{ secrets.MERGEMIND_LICENSE_KEY }}
+#
+# The action posts the compliance analysis as a PR comment (created on the
+# first run, updated in place on later pushes). Without a license_key it runs
+# the free tier. GitLab CI is supported separately via examples/gitlab-ci.yml.
+
+name: "MergeMind"
+description: >-
+  Compliance-aware PR analysis — maps your pull request diff to SOX, SOC 2,
+  and ISO 27001 controls and posts the assessment as a PR comment.
+author: "Cyber Global Technologies LLC"
+branding:
+  icon: "shield"
+  color: "purple"
+
+inputs:
+  openai_api_key:
+    description: "Your OpenAI API key (store as a repo secret)."
+    required: true
+  license_key:
+    description: "MergeMind license key (optional — free tier runs without it)."
+    required: false
+    default: ""
+  validation_url:
+    description: "License validation endpoint (override if self-hosting the API)."
+    required: false
+    default: "https://api.mergemind.dev/api/validate-key"
+  github_token:
+    description: "Token used to post the PR comment (defaults to the job's GITHUB_TOKEN)."
+    required: false
+    default: ${{ github.token }}
+
+runs:
+  using: "composite"
+  steps:
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: 20
+
+    - name: Run MergeMind
+      shell: bash
+      working-directory: ${{ github.workspace }}
+      env:
+        OPENAI_API_KEY: ${{ inputs.openai_api_key }}
+        MERGEMIND_LICENSE_KEY: ${{ inputs.license_key }}
+        MERGEMIND_VALIDATION_URL: ${{ inputs.validation_url }}
+        GITHUB_TOKEN: ${{ inputs.github_token }}
+      run: node "${{ github.action_path }}/src/action.js"

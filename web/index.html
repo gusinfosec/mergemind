@@ -1034,13 +1034,16 @@
       <div class="step-num">01</div>
       <div class="step-content">
         <div class="step-title">Add the workflow file</div>
-        <p class="step-desc">Create <code>.github/workflows/mergemind.yml</code> in your repo.</p>
+        <p class="step-desc">Create <code>.github/workflows/mergemind.yml</code> in your repo with this one-liner action:</p>
         <div class="code-block">
-<span class="kw">name</span>: MergeMind PR Analysis<br>
-<span class="kw">on</span>:<br>
-&nbsp;&nbsp;<span class="kw">pull_request</span>:<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">types</span>: [opened, synchronize, reopened]
+<span class="kw">steps</span>:<br>
+&nbsp;&nbsp;- <span class="kw">uses</span>: <span class="str">actions/checkout@v4</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">with</span>: { <span class="kw">fetch-depth</span>: <span class="str">0</span> }<br>
+&nbsp;&nbsp;- <span class="kw">uses</span>: <span class="str">gusinfosec/mergemind@v1</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">with</span>:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">openai_api_key</span>: <span class="str">${{ secrets.OPENAI_API_KEY }}</span>
         </div>
+        <p class="step-desc" style="margin-top:0.75rem">Full <code>name</code>/<code>on</code>/<code>permissions</code> boilerplate is in the repo README.</p>
       </div>
     </div>
     <div class="install-step">

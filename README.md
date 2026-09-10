@@ -106,7 +106,7 @@ MERGEMIND_LICENSE_KEY=your_key_here
 
 ---
 
-## Getting Started
+## Getting Started (GitHub Actions)
 
 1. Add this workflow to `.github/workflows/mergemind.yml` in your repo:
 
@@ -124,41 +124,25 @@ jobs:
   analyze:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout your repo
-        uses: actions/checkout@v4
+      # Full history so the diff range resolves (MergeMind diffs base...HEAD)
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: Checkout MergeMind
-        uses: actions/checkout@v4
+      - uses: gusinfosec/mergemind@v1
         with:
-          repository: gusinfosec/mergemind
-          path: .mergemind
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-
-      - run: npm install
-        working-directory: .mergemind
-
-      - name: Run MergeMind
-        run: node .mergemind/src/action.js
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-          MERGEMIND_LICENSE_KEY: ${{ secrets.MERGEMIND_LICENSE_KEY }}
-          MERGEMIND_VALIDATION_URL: https://api.mergemind.dev/api/validate-key
+          openai_api_key: ${{ secrets.OPENAI_API_KEY }}
+          license_key: ${{ secrets.MERGEMIND_LICENSE_KEY }}  # optional
 ```
 
 2. Add your secrets under **Settings → Secrets and variables → Actions**:
 
 ```
 OPENAI_API_KEY=sk-...
-MERGEMIND_LICENSE_KEY=your_key
+MERGEMIND_LICENSE_KEY=your_key   # optional — free tier works without it
 ```
 
-3. Open a PR — MergeMind runs automatically.
+3. Open a PR — MergeMind runs automatically and posts the compliance analysis as a PR comment (created on the first push, updated in place on later pushes).
 
 ### Using MergeMind on GitLab CI
 
@@ -171,6 +155,8 @@ MERGEMIND_LICENSE_KEY=your_key     # optional, free tier works without it
 ```
 
 For self-managed GitLab, also set `MERGEMIND_GITLAB_HOST` (defaults to `https://gitlab.com`). Open a merge request — MergeMind analyzes the diff and posts the compliance assessment as an MR note.
+
+> Note: the GitLab path still uses the copy-paste workflow (see `examples/gitlab-ci.yml`); the one-line `action.yml` packaging is GitHub Actions-only.
 
 ---
 
