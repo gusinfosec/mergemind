@@ -230,6 +230,44 @@ test("postGitlabNote: returns false when not on GitLab", async () => {
   }
 });
 
+test("run: OpenAI non-OK response exits with error message", async () => {
+  const restore = setEnv({
+    GITHUB_REPOSITORY: "gusinfosec/mergemind",
+    GITHUB_TOKEN: "gh_test",
+    GITHUB_EVENT_PATH: writeEvent({ pull_request: { number: 42 } }),
+  });
+  const origFetch = global.fetch;
+  const origExit = process.exit;
+  let exitCode = null;
+  const calls = [];
+  global.fetch = async (url, opts = {}) => {
+    calls.push(url);
+    if (url.includes("/api/validate-key")) {
+      return jsonResponse({ valid: true, plan: "license" });
+    }
+    if (url.includes("api.openai.com")) {
+      return new Response(
+        JSON.stringify({ error: { message: "Incorrect API key provided" } }),
+        { status: 401, headers: { "Content-Type": "application/json" } }
+      );
+    }
+    return jsonResponse({}, 404);
+  };
+  process.exit = (code) => {
+    exitCode = code;
+    throw new Error("exit");
+  };
+  try {
+    await assert.rejects(() => mod.run({ diffOverride: "diff content" }), /exit/);
+    assert.equal(exitCode, 1);
+    assert.ok(calls.some((u) => u.includes("api.openai.com")));
+  } finally {
+    process.exit = origExit;
+    global.fetch = origFetch;
+    restore();
+  }
+});
+
 test("getGithubPrNumber: parses PR number from event payload", () => {
   const restore = setEnv({
     GITHUB_EVENT_PATH: writeEvent({ pull_request: { number: 1337 } }),

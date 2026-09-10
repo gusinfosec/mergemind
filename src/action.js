@@ -241,7 +241,7 @@ async function postGitlabNote(output) {
 // ---------------------------------------------------------------------------
 // Main
 // ---------------------------------------------------------------------------
-async function run() {
+async function run({ diffOverride } = {}) {
   // 1. Validate license — fails open to free tier, never blocks CI.
   const license = await validateLicense(MERGEMIND_LICENSE_KEY);
   const isPro = license.valid && license.plan !== "free";
@@ -257,7 +257,7 @@ async function run() {
   console.log(`Plan: ${isPro ? license.plan.toUpperCase() : "FREE"}`);
 
   // 2. Get diff
-  const diff = getDiff();
+  const diff = diffOverride ?? getDiff();
 
   if (!diff.trim()) {
     console.log("No diff to analyze — skipping.");
@@ -307,6 +307,18 @@ ${usableDiff}`;
         temperature: 0.3,
       }),
     });
+
+    if (!response.ok) {
+      let detail = "";
+      try {
+        const errBody = await response.json();
+        detail = errBody?.error?.message || JSON.stringify(errBody);
+      } catch {}
+      console.error(
+        `OpenAI API error ${response.status}: ${detail || "unknown"} (check your OPENAI_API_KEY and billing)`
+      );
+      process.exit(1);
+    }
 
     const data = await response.json();
     const output = data.choices?.[0]?.message?.content || "No output";
