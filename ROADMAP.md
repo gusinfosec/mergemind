@@ -33,3 +33,5 @@ This is a working plan. Track progress in Issues & Discussions.
 - Commit message suggestions  
 
 <!-- minor tweak to trigger PR -->
+
+<!-- verification commit for composite action.yml -->
