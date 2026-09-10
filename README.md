@@ -116,6 +116,10 @@ on:
   pull_request:
     types: [opened, synchronize, reopened]
 
+permissions:
+  contents: read
+  pull-requests: write
+
 jobs:
   analyze:
     runs-on: ubuntu-latest

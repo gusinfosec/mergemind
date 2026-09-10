@@ -1,4 +1,7 @@
 import { execSync } from "child_process";
+import { readFileSync } from "fs";
+import { fileURLToPath } from "url";
+import path from "path";
 
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 const MERGEMIND_LICENSE_KEY = process.env.MERGEMIND_LICENSE_KEY;
@@ -9,37 +12,74 @@ const MERGEMIND_VALIDATION_URL =
 // ── Platform detection ─────────────────────────────────────────────────────
 // GitLab CI sets these vars on merge-request pipelines; GitHub Actions does
 // not. When they're present we're running on GitLab.
-const ON_GITLAB = Boolean(
-  process.env.CI_PROJECT_ID && process.env.CI_MERGE_REQUEST_IID
-);
-const REPO =
-  process.env.GITHUB_REPOSITORY || process.env.CI_PROJECT_PATH || "";
+// Computed lazily (not at import time) so the module is testable.
+function isGitlab() {
+  return Boolean(
+    process.env.CI_PROJECT_ID && process.env.CI_MERGE_REQUEST_IID
+  );
+}
+
+function isGithub() {
+  return Boolean(process.env.GITHUB_REPOSITORY);
+}
+
+function repoName() {
+  return process.env.GITHUB_REPOSITORY || process.env.CI_PROJECT_PATH || "";
+}
+
+const ON_GITLAB = isGitlab();
+const ON_GITHUB = isGithub();
+const REPO = repoName();
 
 console.log(`MergeMind running... (${ON_GITLAB ? "GitLab CI" : "GitHub Actions"})`);
 
+// Marker used to find and update our own PR comment on GitHub (dedupe — we
+// never want a new comment per push to the same PR).
+const GITHUB_COMMENT_MARKER = "<!-- mergemind:analysis -->";
+
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
 // ---------------------------------------------------------------------------
-// Remote license validation
+// Remote license validation — FAILS OPEN.
+// Any inability to validate (network error, 5xx, timeout) degrades to the
+// free tier with a warning instead of failing the CI run. A deliberately
+// invalid/expired key (HTTP 200, valid:false) also warns rather than blocks.
 // ---------------------------------------------------------------------------
 async function validateLicense(key) {
   if (!key) return { valid: false, plan: "free" };
 
-  try {
-    const res = await fetch(MERGEMIND_VALIDATION_URL, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ key, repo: REPO }),
-      signal: AbortSignal.timeout(8000),
-    });
+  let lastError = null;
+  for (let attempt = 0; attempt < 3; attempt++) {
+    try {
+      const res = await fetch(MERGEMIND_VALIDATION_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ key, repo: repoName() }),
+        signal: AbortSignal.timeout(8000),
+      });
 
-    if (!res.ok) return { valid: false, plan: "free" };
-    return await res.json();
-  } catch (err) {
-    // Endpoint unreachable — warn but don't block the workflow
-    console.warn(
-      "Warning: Could not reach MergeMind validation server. Running as free tier."
-    );
-    return { valid: false, plan: "free", _unreachable: true };
+      if (res.ok) return await res.json();
+
+      // 5xx = server hiccup → retry, then fall back to free.
+      if (res.status >= 500) {
+        lastError = new Error(`validation server returned ${res.status}`);
+      } else {
+        // 4xx = endpoint misconfigured or key malformed — no point retrying.
+        console.warn(
+          `Warning: MergeMind validation returned ${res.status} — running as free tier.`
+        );
+        return { valid: false, plan: "free", _unreachable: true };
+      }
+    } catch (err) {
+      lastError = err;
+    }
+    await sleep(500 * (attempt + 1));
   }
+
+  console.warn(
+    `Warning: Could not reach MergeMind validation server (${lastError?.message || "unknown"}) — running as free tier.`
+  );
+  return { valid: false, plan: "free", _unreachable: true };
 }
 
 // ---------------------------------------------------------------------------
@@ -65,11 +105,103 @@ function getDiff() {
   }
 }
 
+function truncate(output, limit) {
+  if (output.length <= limit) return output;
+  return output.slice(0, limit) + "\n\n… (truncated — see job log for full output)";
+}
+
 // ---------------------------------------------------------------------------
-// Output — console.log (GitHub) or GitLab merge-request note
+// Output — GitHub PR comment (create-or-update), GitLab MR note, or console
 // ---------------------------------------------------------------------------
+function getGithubPrNumber() {
+  // GitHub Actions writes the full event payload (with pull_request.number)
+  // to GITHUB_EVENT_PATH. Runs triggered by push (not PR) have no number.
+  try {
+    const eventPath = process.env.GITHUB_EVENT_PATH;
+    if (!eventPath) return null;
+    const event = JSON.parse(readFileSync(eventPath, "utf8"));
+    return event?.pull_request?.number ?? null;
+  } catch {
+    return null;
+  }
+}
+
+async function postGithubComment(output) {
+  if (!isGithub()) return false;
+  const token = process.env.GITHUB_TOKEN;
+  if (!token) {
+    console.warn("GitHub Actions detected but no GITHUB_TOKEN set — see job log for output.");
+    return false;
+  }
+
+  const prNumber = getGithubPrNumber();
+  if (!prNumber) {
+    // Push run (no PR) — nothing to comment on.
+    return false;
+  }
+
+  const [owner, repo] = repoName().split("/");
+  if (!owner || !repo) return false;
+  const apiBase = `https://api.github.com/repos/${owner}/${repo}`;
+  const body = truncate(`${GITHUB_COMMENT_MARKER}\n\n${output}`, 30000);
+
+  try {
+    const headers = {
+      Authorization: `Bearer ${token}`,
+      Accept: "application/vnd.github+json",
+      "X-GitHub-Api-Version": "2022-11-28",
+      "User-Agent": "mergemind",
+    };
+
+    // 1. Find our existing comment on this PR (dedupe across pushes).
+    let existingId = null;
+    const listRes = await fetch(
+      `${apiBase}/issues/${prNumber}/comments?per_page=100`,
+      { headers, signal: AbortSignal.timeout(15000) }
+    );
+    if (listRes.ok) {
+      const comments = await listRes.json();
+      existingId =
+        comments.find((c) => c.body?.includes(GITHUB_COMMENT_MARKER))?.id ??
+        null;
+    }
+
+    // 2. Update the existing comment, or create a new one.
+    const res = existingId
+      ? await fetch(`${apiBase}/issues/comments/${existingId}`, {
+          method: "PATCH",
+          headers: { ...headers, "Content-Type": "application/json" },
+          body: JSON.stringify({ body }),
+          signal: AbortSignal.timeout(15000),
+        })
+      : await fetch(`${apiBase}/issues/${prNumber}/comments`, {
+          method: "POST",
+          headers: { ...headers, "Content-Type": "application/json" },
+          body: JSON.stringify({ body }),
+          signal: AbortSignal.timeout(15000),
+        });
+
+    if (!res.ok) {
+      console.warn(
+        `GitHub comment ${existingId ? "update" : "create"} failed (${res.status}) — see job log for output.`
+      );
+      return false;
+    }
+
+    console.log(
+      existingId
+        ? `Updated MergeMind analysis on PR #${prNumber}.`
+        : `Posted MergeMind analysis to PR #${prNumber}.`
+    );
+    return true;
+  } catch (err) {
+    console.warn("Could not post GitHub comment:", err.message);
+    return false;
+  }
+}
+
 async function postGitlabNote(output) {
-  if (!ON_GITLAB) return false;
+  if (!isGitlab()) return false;
   const token = process.env.MERGEMIND_GITLAB_TOKEN || process.env.CI_JOB_TOKEN;
   if (!token) {
     console.warn(
@@ -90,12 +222,7 @@ async function postGitlabNote(output) {
           "PRIVATE-TOKEN": token,
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          body:
-            output.length > 10000
-              ? output.slice(0, 10000) + "\n\n… (truncated — see job log for full output)"
-              : output,
-        }),
+        body: JSON.stringify({ body: truncate(output, 10000) }),
         signal: AbortSignal.timeout(15000),
       }
     );
@@ -115,15 +242,16 @@ async function postGitlabNote(output) {
 // Main
 // ---------------------------------------------------------------------------
 async function run() {
-  // 1. Validate license
+  // 1. Validate license — fails open to free tier, never blocks CI.
   const license = await validateLicense(MERGEMIND_LICENSE_KEY);
   const isPro = license.valid && license.plan !== "free";
 
-  if (MERGEMIND_LICENSE_KEY && !license.valid && !license._unreachable) {
-    console.error(
-      "Invalid or expired MergeMind license. Visit mergemind.dev to get a key."
+  if (MERGEMIND_LICENSE_KEY && !license.valid) {
+    console.warn(
+      license._unreachable
+        ? "MergeMind license could not be validated (server unreachable) — running as FREE tier."
+        : "Invalid or expired MergeMind license — running as FREE tier. Visit mergemind.dev to get a key."
     );
-    process.exit(1);
   }
 
   console.log(`Plan: ${isPro ? license.plan.toUpperCase() : "FREE"}`);
@@ -156,7 +284,7 @@ async function run() {
 
   const prompt = `You are a senior IT auditor and compliance expert.
 
-Analyze this ${ON_GITLAB ? "GitLab merge request" : "GitHub pull request"} diff and return:
+Analyze this ${isGitlab() ? "GitLab merge request" : "GitHub pull request"} diff and return:
 
 ## PR Title
 ## Summary
@@ -182,7 +310,10 @@ ${usableDiff}`;
 
     const data = await response.json();
     const output = data.choices?.[0]?.message?.content || "No output";
-    const posted = await postGitlabNote(output);
+
+    // 5. Post to the PR (GitHub first, then GitLab), else log.
+    const posted =
+      (await postGithubComment(output)) || (await postGitlabNote(output));
     if (!posted) console.log(output);
   } catch (err) {
     console.error("OpenAI call failed:", err.message);
@@ -190,4 +321,17 @@ ${usableDiff}`;
   }
 }
 
-run();
+// Allow importing for tests without auto-running.
+const isMain =
+  process.argv[1] &&
+  path.resolve(process.argv[1]) === fileURLToPath(import.meta.url);
+if (isMain) run();
+
+export {
+  validateLicense,
+  getDiff,
+  getGithubPrNumber,
+  postGithubComment,
+  postGitlabNote,
+  run,
+};
