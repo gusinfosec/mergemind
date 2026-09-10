@@ -25,10 +25,9 @@
 # first run, updated in place on later pushes). Without a license_key it runs
 # the free tier. GitLab CI is supported separately via examples/gitlab-ci.yml.
 
-name: "MergeMind"
+name: "MergeMind Compliance"
 description: >-
-  Compliance-aware PR analysis — maps your pull request diff to SOX, SOC 2,
-  and ISO 27001 controls and posts the assessment as a PR comment.
+  Compliance-aware PR analysis — maps diffs to SOX, SOC 2, and ISO 27001 controls as a PR comment.
 author: "Cyber Global Technologies LLC"
 branding:
   icon: "shield"
