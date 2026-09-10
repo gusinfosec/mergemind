@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#060a14">
 <title>MergeMind — Compliance-Aware PR Analysis</title>
 <meta name="description" content="MergeMind maps your merge request diffs to SOX, SOC 2, and ISO 27001 controls — so audit findings surface before the merge, not after the deployment. Free for GitHub Actions and GitLab CI.">
 <meta name="keywords" content="compliance PR analysis, SOX controls, SOC 2, ISO 27001, GitHub Action, GitLab CI, merge request compliance, audit automation, control mapping">
@@ -37,6 +38,7 @@
 }
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -115,12 +117,44 @@
     color: white;
   }
 
+  .nav-right {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+  }
+
   .nav-links {
     display: flex;
     align-items: center;
     gap: 2rem;
     list-style: none;
   }
+
+  .nav-toggle {
+    display: none;
+    background: none;
+    border: 1px solid var(--border2);
+    border-radius: 6px;
+    width: 38px; height: 38px;
+    padding: 0;
+    cursor: pointer;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+  }
+
+  .nav-toggle span {
+    display: block;
+    width: 18px; height: 2px;
+    border-radius: 2px;
+    background: var(--text);
+    transition: transform 0.2s, opacity 0.2s;
+  }
+
+  nav.open .nav-toggle span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+  nav.open .nav-toggle span:nth-child(2) { opacity: 0; }
+  nav.open .nav-toggle span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
 
   .nav-links a {
     font-family: var(--mono);
@@ -211,9 +245,19 @@
     gap: 1rem;
     flex-wrap: wrap;
     justify-content: center;
-    margin-bottom: 4rem;
+    margin-bottom: 1rem;
     animation: fadeUp 0.6s 0.3s ease both;
   }
+
+  .hero-note {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--muted);
+    margin-bottom: 3.5rem;
+    animation: fadeUp 0.6s 0.35s ease both;
+  }
+
+  .hero-note a { color: var(--blue); text-decoration: none; }
 
   .btn-primary {
     display: inline-flex;
@@ -438,6 +482,151 @@
   .fw-pill.purple { border-color: rgba(167,139,250,0.4); color: var(--purple); background: rgba(167,139,250,0.08); }
   .fw-pill.green { border-color: rgba(52,211,153,0.4); color: var(--green); background: rgba(52,211,153,0.08); }
 
+  /* REAL OUTPUT */
+  .pr-comment {
+    border: 1px solid var(--border2);
+    border-radius: 12px;
+    background: var(--bg2);
+    overflow: hidden;
+    max-width: 720px;
+    margin: 0 auto;
+  }
+
+  .pr-comment-head {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 20px;
+    background: var(--bg3);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .pr-avatar {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #3b82f6, #6d28d9);
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 700;
+    color: #fff;
+    flex-shrink: 0;
+  }
+
+  .pr-author {
+    font-family: var(--mono);
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text);
+    display: block;
+  }
+
+  .pr-meta {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--muted);
+  }
+
+  .pr-comment-body {
+    padding: 20px;
+    font-family: var(--mono);
+    font-size: 13px;
+    line-height: 1.8;
+    color: #b7c1d1;
+    text-align: left;
+  }
+
+  .pr-comment-body h3 {
+    font-family: var(--sans);
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 10px;
+  }
+
+  .pr-comment-body .risk-line {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 12px;
+  }
+
+  .risk-badge {
+    font-family: var(--mono);
+    font-size: 12px;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 100px;
+    color: var(--amber);
+    border: 1px solid rgba(251,191,36,0.4);
+    background: rgba(251,191,36,0.08);
+  }
+
+  .pr-code { color: var(--purple); }
+  .pr-hint {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--muted);
+    text-align: center;
+    margin-top: 1.5rem;
+  }
+
+  /* FAQ */
+  .faq-list {
+    max-width: 720px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+  }
+
+  details {
+    background: var(--bg);
+    padding: 1.25rem 1.5rem;
+    transition: background 0.2s;
+  }
+  details:hover { background: var(--bg2); }
+
+  summary {
+    font-family: var(--sans);
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text);
+    cursor: pointer;
+    list-style: none;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  summary::-webkit-details-marker { display: none; }
+
+  summary::after {
+    content: '+';
+    font-family: var(--mono);
+    font-size: 18px;
+    color: var(--muted);
+    transition: transform 0.2s;
+    flex-shrink: 0;
+  }
+
+  details[open] summary::after { transform: rotate(45deg); }
+
+  details p {
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.7;
+    margin-top: 0.75rem;
+  }
+
+  details a { color: var(--blue); }
+
   /* PRICING */
   .pricing-grid {
     display: grid;
@@ -634,6 +823,42 @@
     from { opacity: 0; transform: translateY(20px); }
     to { opacity: 1; transform: translateY(0); }
   }
+
+  /* MOBILE NAV */
+  @media (max-width: 768px) {
+    .nav-toggle { display: flex; }
+    .nav-right {
+      position: absolute;
+      top: 60px; left: 0; right: 0;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 0;
+      background: rgba(6,10,20,0.97);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 2rem;
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.25s ease;
+    }
+    nav.open .nav-right { max-height: 400px; }
+    .nav-links {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 0;
+    }
+    .nav-links li { border-bottom: 1px solid var(--border); }
+    .nav-links a { display: block; padding: 14px 0; font-size: 14px; }
+    .nav-cta { margin: 16px 0 20px; text-align: center; }
+    footer { flex-direction: column; text-align: center; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation: none !important;
+      transition: none !important;
+    }
+  }
 </style>
 </head>
 <body>
@@ -643,14 +868,20 @@
     <div class="logo-icon">M</div>
     MergeMind
   </a>
-  <ul class="nav-links">
-    <li><a href="#features">Features</a></li>
-    <li><a href="#install">Install</a></li>
-    <li><a href="#pricing">Pricing</a></li>
-    <li><a href="https://github.com/gusinfosec/mergemind" target="_blank">GitHub</a></li>
-    <li><a href="/privacy">Privacy</a></li>
-  </ul>
-  <a href="https://buy.stripe.com/4gM3cva2sfd54bD12ffbq08" class="nav-cta" data-track="checkout_started" data-track-meta='{"plan":"license","source":"nav"}'>Get License →</a>
+  <div class="nav-right" id="nav-right">
+    <ul class="nav-links">
+      <li><a href="#features">Features</a></li>
+      <li><a href="#install">Install</a></li>
+      <li><a href="#pricing">Pricing</a></li>
+      <li><a href="#faq">FAQ</a></li>
+      <li><a href="https://github.com/gusinfosec/mergemind" target="_blank">GitHub</a></li>
+      <li><a href="/privacy">Privacy</a></li>
+    </ul>
+    <a href="https://buy.stripe.com/4gM3cva2sfd54bD12ffbq08" class="nav-cta" data-track="checkout_started" data-track-meta='{"plan":"license","source":"nav"}'>Get License →</a>
+  </div>
+  <button class="nav-toggle" id="nav-toggle" aria-label="Menu" aria-expanded="false">
+    <span></span><span></span><span></span>
+  </button>
 </nav>
 
 <!-- HERO -->
@@ -667,13 +898,17 @@
   </p>
 
   <div class="hero-actions">
-    <a href="https://github.com/gusinfosec/mergemind" class="btn-primary" target="_blank" data-track="install_clicked" data-track-meta='{"source":"hero"}'>
-      ★ View on GitHub
+    <a href="#install" class="btn-primary" data-track="install_clicked" data-track-meta='{"source":"hero"}'>
+      Install in 2 minutes →
     </a>
     <a href="#pricing" class="btn-secondary">
       See pricing →
     </a>
   </div>
+  <p class="hero-note">
+    Free tier works without a license key · No signup · Open source on
+    <a href="https://github.com/gusinfosec/mergemind" target="_blank" rel="noopener">GitHub</a>
+  </p>
 
   <div class="terminal">
     <div class="terminal-bar">
@@ -757,6 +992,33 @@
   </div>
 </section>
 
+<!-- REAL OUTPUT -->
+<section id="example">
+  <div class="section-label">// real output</div>
+  <h2 class="section-title"><span style="display:block">What MergeMind actually</span><span style="display:block">posts on your PR</span></h2>
+  <p class="section-sub">No mockups — this is real analysis output, posted automatically as a comment on a pull request.</p>
+
+  <div class="pr-comment">
+    <div class="pr-comment-head">
+      <div class="pr-avatar">MM</div>
+      <div>
+        <span class="pr-author">github-actions</span>
+        <span class="pr-meta">[bot] commented · MergeMind analysis</span>
+      </div>
+    </div>
+    <div class="pr-comment-body">
+      <h3>Enhance <span class="pr-code">run</span> Function with Diff Override and Improved Error Handling</h3>
+      <p>This pull request introduces modifications to the <span class="pr-code">run</span> function in <span class="pr-code">src/action.js</span> to accept an optional parameter <span class="pr-code">diffOverride</span>, allowing a custom diff instead of the default from <span class="pr-code">getDiff()</span>. Error handling for the OpenAI API response is improved to surface clearer error messages. A new test case validates the functionality.</p>
+      <div class="risk-line">
+        <span class="risk-badge">MEDIUM</span>
+        <span>Risk level · <span class="pr-code">mapped from the actual diff</span></span>
+      </div>
+      <p style="margin-top:12px">On the paid plan this same comment also includes <span class="pr-code">SOX / SOC 2 / ISO 27001</span> control mappings, control-gap analysis, and remediation recommendations.</p>
+    </div>
+  </div>
+  <p class="pr-hint">← Real output from a live MergeMind run (verified end-to-end)</p>
+</section>
+
 <!-- INSTALL -->
 <section id="install">
   <div class="section-label">// quick install</div>
@@ -838,6 +1100,48 @@
       </ul>
       <a href="https://buy.stripe.com/4gM3cva2sfd54bD12ffbq08" class="pricing-btn filled" target="_blank" data-track="checkout_started" data-track-meta='{"plan":"license","source":"pricing"}'>Get License — $29 →</a>
     </div>
+  </div>
+  <p class="pr-hint" style="margin-top:1.5rem">
+    One-time license covers a single repo. Multi-repo or team pricing?
+    <a href="mailto:info@cyberglobal.ai" style="color:var(--blue)">Email us</a>.
+  </p>
+</section>
+
+<!-- FAQ -->
+<section id="faq">
+  <div class="section-label">// faq</div>
+  <h2 class="section-title">Questions, answered</h2>
+  <p class="section-sub">The things compliance-minded teams ask before installing.</p>
+
+  <div class="faq-list">
+    <details>
+      <summary>Is my code sent to MergeMind?</summary>
+      <p>No. MergeMind runs entirely inside your own CI environment — your PR diff goes directly from your runner to OpenAI's API. MergeMind's servers never see your code, and nothing is stored on our side except the email + license key used for license delivery.</p>
+    </details>
+    <details>
+      <summary>What does the free tier include?</summary>
+      <p>PR title + summary and a Low / Medium / High risk assessment, posted automatically as a PR comment. Free tier analyzes the first 2,000 characters of your diff — plenty for most PRs.</p>
+    </details>
+    <details>
+      <summary>What does the $29 license unlock?</summary>
+      <p>Full-diff analysis with no token limit, plus SOX, SOC 2, and ISO 27001 control mapping, control-gap analysis, and remediation recommendations — all in the same PR comment.</p>
+    </details>
+    <details>
+      <summary>How do I get my license key after paying?</summary>
+      <p>It's emailed to the address you use at checkout — usually within a minute. Add it as the <code>MERGEMIND_LICENSE_KEY</code> secret in your repo and you're set. Didn't get it? Email <a href="mailto:info@cyberglobal.ai">info@cyberglobal.ai</a>.</p>
+    </details>
+    <details>
+      <summary>Does it work with GitLab?</summary>
+      <p>Yes — gitlab.com and self-managed instances (set <code>MERGEMIND_GITLAB_HOST</code>). Analysis is posted as an MR note. Copy <code>examples/gitlab-ci.yml</code> from the repo.</p>
+    </details>
+    <details>
+      <summary>Which AI model does it use?</summary>
+      <p>By default <code>gpt-4o-mini</code>, called with your own <code>OPENAI_API_KEY</code>. Support for OpenAI-compatible self-hosted endpoints is on the roadmap.</p>
+    </details>
+    <details>
+      <summary>What if I need a refund?</summary>
+      <p>Refunds are at our discretion — email <a href="mailto:info@cyberglobal.ai">info@cyberglobal.ai</a> within 30 days and we'll sort you out.</p>
+    </details>
   </div>
 </section>
 
@@ -958,6 +1262,23 @@
       window.cgtTrack(eventType, meta);
     });
   });
+
+  // Mobile nav toggle (hamburger)
+  var navEl = document.querySelector("nav");
+  var toggle = document.getElementById("nav-toggle");
+  if (navEl && toggle) {
+    toggle.addEventListener("click", function () {
+      var open = navEl.classList.toggle("open");
+      toggle.setAttribute("aria-expanded", open ? "true" : "false");
+    });
+    // Close the menu after tapping a link (mobile)
+    navEl.querySelectorAll("a").forEach(function (a) {
+      a.addEventListener("click", function () {
+        navEl.classList.remove("open");
+        toggle.setAttribute("aria-expanded", "false");
+      });
+    });
+  }
 })();
 </script>
 
