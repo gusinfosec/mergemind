@@ -1085,7 +1085,7 @@
 <section id="example">
   <div class="section-label">// real output</div>
   <h2 class="section-title"><span style="display:block">What MergeMind actually</span><span style="display:block">posts on your PR</span></h2>
-  <p class="section-sub">No mockups — this is real analysis output, posted automatically as a comment on a pull request.</p>
+  <p class="section-sub">No mockups — both blocks below are real, unedited output posted as a comment on a pull request. The second one shows what the paid license adds.</p>
 
   <div class="pr-comment">
     <div class="pr-comment-head">
@@ -1102,10 +1102,35 @@
         <span class="risk-badge">MEDIUM</span>
         <span>Risk level · <span class="pr-code">mapped from the actual diff</span></span>
       </div>
-      <p style="margin-top:12px">On the paid plan this same comment also includes <span class="pr-code">SOX / SOC 2 / ISO 27001</span> control mappings, control-gap analysis, and remediation recommendations.</p>
+      <p style="margin-top:12px">On the paid plan this same comment also includes <span class="pr-code">SOX / SOC 2 / ISO 27001</span> control mappings, control-gap analysis, and remediation recommendations — see below.</p>
     </div>
   </div>
-  <p class="pr-hint">← Real output from a live MergeMind run on the free tier — compare it with the paid-plan example in the <a href="https://github.com/gusinfosec/mergemind#readme" target="_blank" rel="noopener" style="color:var(--blue)">README</a></p>
+  <p class="pr-hint">↑ Free tier: PR title, summary and risk level. Unedited, from a live run.</p>
+
+  <div class="pr-comment" style="margin-top:2.5rem">
+    <div class="pr-comment-head">
+      <div class="pr-avatar">MM</div>
+      <div>
+        <span class="pr-author">github-actions</span>
+        <span class="pr-meta">[bot] commented · MergeMind analysis · paid license</span>
+      </div>
+    </div>
+    <div class="pr-comment-body">
+      <h3>Mask License Key in Logs</h3>
+      <p>This pull request introduces a new function, <span class="pr-code">maskKey</span>, which is designed to obfuscate license keys before logging them. The function ensures that only the prefix and the last four characters of the key are logged, thereby enhancing security by preventing the exposure of full license keys in logs. The <span class="pr-code">maskKey</span> function is integrated into the license creation and revocation processes, ensuring that sensitive information is not disclosed in the logs.</p>
+      <div class="risk-line">
+        <span class="risk-badge">MEDIUM</span>
+        <span>Risk level</span>
+      </div>
+      <p style="margin-top:12px"><strong>Compliance Mapping</strong><br>
+        SOX (ITGC): access to programs and data<br>
+        SOC 2 (TSC 2017): CC6.1 logical access controls<br>
+        ISO/IEC 27001:2022: A.8.5 secure authentication</p>
+      <p style="margin-top:12px"><strong>Control Gap</strong><br>There may be a lack of comprehensive logging policies that dictate how sensitive information should be handled in logs, which could lead to potential exposure if not managed properly.</p>
+      <p style="margin-top:12px"><strong>Recommendation</strong><br>Implement a logging policy that defines how sensitive data should be masked or omitted in logs across the application to ensure compliance with security best practices.</p>
+    </div>
+  </div>
+  <p class="pr-hint">↑ Paid license: the same diff, plus control mapping, gap analysis and remediation. This is unedited output from MergeMind analyzing its own commit <a href="https://github.com/gusinfosec/mergemind/commit/cb847c14b67e18e74a3cc94d488b78131b885cac" target="_blank" rel="noopener" style="color:var(--blue)">cb847c1</a> — a public commit, so you can check the input yourself.</p>
   <p class="pr-hint" style="margin-top:0.5rem">AI-generated and informational — review findings before relying on them (see <a href="/terms" style="color:var(--blue)">Terms</a>).</p>
 </section>
 

@@ -33,6 +33,8 @@ For every pull request, MergeMind generates:
 
 Frameworks referenced: **SOX** (IT general controls), **SOC 2** (Trust Services Criteria, 2017 revision) and **ISO/IEC 27001:2022** Annex A. Findings are AI-generated and informational — they are a review aid, not an audit opinion (see the [Terms](https://mergemind.dev/terms)).
 
+Control identifiers are validated against the framework's current numbering before they are posted: a reference that isn't a real SOC 2 criterion or a real ISO/IEC 27001:2022 Annex A control is dropped rather than shown, and logged in the CI run. Models like to fall back on the superseded 2013 ISO numbering, so this is checked rather than trusted.
+
 ---
 
 ## Before / After
@@ -67,7 +69,7 @@ High
 ## Recommendations
 - Add integration tests for MFA flow before merging to main
 
-> The paid tier analyzes the full diff; the free tier analyzes the first 2,000 characters of it. Control references above are AI-generated and informational — review them before relying on them.
+> The paid tier analyzes the full diff; the free tier analyzes the first 2,000 characters of it. Control references above are AI-generated and informational — review them before relying on them. Real, unedited paid-license output (run against a public commit) is on [mergemind.dev](https://mergemind.dev/#example).
 
 ---
 

@@ -239,6 +239,61 @@ async function postGitlabNote(output) {
 }
 
 // ---------------------------------------------------------------------------
+// Citation guard
+//
+// The citation *is* the product, so a confidently-wrong clause number costs
+// more trust than no number at all. Models reliably drift back to ISO
+// 27001:2013 numbering (A.9.x, A.11.x, A.12.x) even when the prompt asks for
+// 2022, and they will happily put a SOC 2 criterion under SOX. Validate what
+// came back: the posted comment never carries an unverifiable reference, and
+// the CI log says which ones were dropped.
+// ---------------------------------------------------------------------------
+
+// ISO/IEC 27001:2022 Annex A = A.5.1–A.5.37, A.6.1–A.6.8, A.7.1–A.7.14, A.8.1–A.8.34.
+const ISO_2022_RE =
+  /^A\.(?:5\.(?:[1-9]|[12]\d|3[0-7])|6\.[1-8]|7\.(?:[1-9]|1[0-4])|8\.(?:[1-9]|[12]\d|3[0-4]))$/;
+// SOC 2 Trust Services Criteria: CC1.1–CC9.2, plus the A1/C1/PI1/P category codes.
+const SOC2_TSC_RE = /^(?:CC[1-9]\.[1-9]|A1\.[1-3]|C1\.[12]|PI1\.[1-3]|P[1-8](?:\.[1-3])?)$/;
+
+function cleanCitations(output) {
+  const rejected = [];
+
+  const cleaned = output.split("\n").map((line) => {
+    if (!/^\s*-\s/.test(line)) return line;
+    const isIso = /ISO\/?(?:IEC)?\s*27001|ISO\s*27001/i.test(line);
+    const isSoc2 = /SOC\s?2/i.test(line);
+    const isSox = /\bSOX\b/i.test(line);
+    if (!isIso && !isSoc2 && !isSox) return line;
+
+    return line
+      .replace(/\b(A\.\d+(?:\.\d+)?|CC\d+\.\d+)\b/g, (token) => {
+        const isoToken = token.startsWith("A.");
+        const ok = isIso && isoToken && ISO_2022_RE.test(token)
+          ? true
+          : isSoc2 && !isoToken && SOC2_TSC_RE.test(token)
+          ? true
+          : false;
+        if (ok) return token;
+        rejected.push(token);
+        return "";
+      })
+      // Tidy the hole left behind: "**: A.9.2.3 (x)" -> "**: (x)"
+      .replace(/(\*\*:\s*)\s+/, "$1")
+      .replace(/\(\s+/g, "(")
+      .replace(/\s{2,}/g, " ")
+      .replace(/\s+$/, "");
+  });
+
+  if (rejected.length) {
+    console.warn(
+      `MergeMind citation guard: dropped ${rejected.length} unverifiable control ` +
+        `reference(s) — ${[...new Set(rejected)].join(", ")}`
+    );
+  }
+  return cleaned.join("\n");
+}
+
+// ---------------------------------------------------------------------------
 // Main
 // ---------------------------------------------------------------------------
 async function run({ diffOverride } = {}) {
@@ -267,15 +322,21 @@ async function run({ diffOverride } = {}) {
   const usableDiff = isPro ? diff : diff.slice(0, 2000);
 
   // 3. Build prompt
-  // Cite each framework with its own identifier — reusing one framework's
-  // numbering for another (e.g. a SOC 2 CC-code under SOX) is wrong and the
-  // compliance audience spots it immediately.
+  // Give the model the identifiers instead of asking it to recall them, and
+  // tell it to omit a number rather than invent one. cleanCitations() then
+  // verifies whatever it produced (see the guard above this function).
   const complianceSection = isPro
     ? `
 ## Compliance Mapping
-- SOX (ITGC): name the IT general control area (e.g. access to programs and data, program changes, computer operations)
-- SOC 2 (TSC 2017): a CC-series criterion (e.g. CC6.1)
-- ISO/IEC 27001:2022: a 2022 Annex A reference (e.g. A.8.5) — not the superseded 2013 numbering
+Always output all three lines below, in this order, even when a framework's link is indirect. Fill in each angle-bracket slot.
+- SOX (ITGC): <the IT general control area, in words>
+- SOC 2 (TSC 2017): <one criterion>
+- ISO/IEC 27001:2022: <one Annex A control>
+
+Pick the SOC 2 and ISO identifiers ONLY from these lists, closest match only. If nothing genuinely fits, describe the area in words and DO NOT invent a clause number.
+- SOC 2 criteria: CC6.1 logical access controls | CC6.2 user registration and authorisation | CC6.3 role-based access | CC7.1 configuration-change detection | CC7.2 monitoring for anomalies | CC8.1 change management
+- ISO/IEC 27001:2022 Annex A: A.5.15 access control | A.5.16 identity management | A.5.17 authentication information | A.5.18 access rights | A.8.2 privileged access rights | A.8.5 secure authentication | A.8.12 data leakage prevention | A.8.15 logging | A.8.16 monitoring activities | A.8.24 use of cryptography | A.8.28 secure coding | A.8.32 change management | A.5.33 protection of records
+- SOX ITGC areas: access to programs and data | program changes | program development | computer operations
 
 ## Control Gaps
 -
@@ -287,11 +348,12 @@ async function run({ diffOverride } = {}) {
 
   const prompt = `You are a senior IT auditor and compliance expert.
 
-Analyze this ${isGitlab() ? "GitLab merge request" : "GitHub pull request"} diff and return:
+Analyze this ${isGitlab() ? "GitLab merge request" : "GitHub pull request"} diff and return these sections, using the headings exactly as written:
 
 ## PR Title
 ## Summary
-## Risk Level (Low / Medium / High)
+## Risk Level
+State exactly one of: Low, Medium, High
 ${complianceSection}
 Diff:
 ${usableDiff}`;
@@ -324,7 +386,9 @@ ${usableDiff}`;
     }
 
     const data = await response.json();
-    const output = data.choices?.[0]?.message?.content || "No output";
+    const raw = data.choices?.[0]?.message?.content || "No output";
+    // Only the paid path emits control identifiers worth policing.
+    const output = isPro ? cleanCitations(raw) : raw;
 
     // 5. Post to the PR (GitHub first, then GitLab), else log.
     const posted =
@@ -348,5 +412,6 @@ export {
   getGithubPrNumber,
   postGithubComment,
   postGitlabNote,
+  cleanCitations,
   run,
 };

@@ -12,6 +12,7 @@ const {
   postGithubComment,
   postGitlabNote,
   getGithubPrNumber,
+  cleanCitations,
 } = mod;
 
 let tmpDir;
@@ -131,6 +132,62 @@ test("validateLicense: 4xx → fails open without retrying", async () => {
     global.fetch = origFetch;
     restore();
   }
+});
+
+// ── cleanCitations ──────────────────────────────────────────────────────────
+
+test("cleanCitations: drops ISO 27001:2013 numbering, keeps 2022", () => {
+  const out = cleanCitations(
+    [
+      "## Compliance Mapping",
+      "- **SOX (ITGC)**: access to programs and data",
+      "- **SOC 2 (TSC 2017)**: CC6.1 (logical access controls)",
+      "- **ISO/IEC 27001:2022**: A.9.2.3 (Management of privileged access rights)",
+      "- **ISO/IEC 27001:2022**: A.8.5 (secure authentication) is also relevant",
+    ].join("\n")
+  );
+  assert.ok(!out.includes("A.9.2.3"), "2013-era reference must not survive");
+  assert.ok(out.includes("A.8.5"), "valid 2022 reference must be kept");
+  assert.ok(out.includes("CC6.1"), "valid SOC 2 criterion must be kept");
+  // The description survives even when the number is dropped.
+  assert.ok(out.includes("Management of privileged access rights"));
+});
+
+test("cleanCitations: rejects a SOC 2 criterion placed under SOX", () => {
+  const out = cleanCitations("- **SOX (ITGC)**: CC6.1 logical access");
+  assert.ok(!out.includes("CC6.1"), "SOX has no CC numbering");
+  assert.ok(out.includes("logical access"));
+});
+
+test("cleanCitations: rejects a real 2022 control under SOC 2 and vice versa", () => {
+  const out = cleanCitations(
+    [
+      "- **SOC 2 (TSC 2017)**: A.8.15 (logging)",
+      "- **ISO/IEC 27001:2022**: CC7.2 (monitoring)",
+    ].join("\n")
+  );
+  assert.ok(!out.includes("A.8.15"), "Annex A ref under SOC 2 is wrong");
+  assert.ok(!out.includes("CC7.2"), "CC ref under ISO is wrong");
+});
+
+test("cleanCitations: accepts every valid 2022 Annex A range boundary", () => {
+  for (const ref of ["A.5.1", "A.5.37", "A.6.1", "A.6.8", "A.7.1", "A.7.14", "A.8.1", "A.8.34"]) {
+    assert.ok(
+      cleanCitations(`- **ISO/IEC 27001:2022**: ${ref} (x)`).includes(ref),
+      `${ref} should be accepted`
+    );
+  }
+  for (const ref of ["A.5.38", "A.9.1", "A.12.6", "A.18.1"]) {
+    assert.ok(
+      !cleanCitations(`- **ISO/IEC 27001:2022**: ${ref} (x)`).includes(ref),
+      `${ref} should be rejected`
+    );
+  }
+});
+
+test("cleanCitations: leaves prose and non-framework lines untouched", () => {
+  const input = "## Summary\nThis adds CC6.1 hooks and A.9.4 shims to the diff.";
+  assert.equal(cleanCitations(input), input);
 });
 
 // ── postGithubComment ───────────────────────────────────────────────────────
