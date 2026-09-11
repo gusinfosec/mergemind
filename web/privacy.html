@@ -7,15 +7,14 @@
 <meta name="description" content="How MergeMind handles your PR diffs and repository data.">
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
 <link rel="icon" type="image/png" href="/favicon.png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root {
     --bg: #060a14; --bg2: #0b1120; --bg3: #101829;
     --border: rgba(99,130,200,0.12); --border2: rgba(99,130,200,0.22);
     --blue: #3b82f6; --purple: #a78bfa; --green: #34d399; --amber: #fbbf24;
-    --text: #e2e8f0; --muted: #64748b;
-    --mono: 'JetBrains Mono', monospace; --sans: 'Space Grotesk', sans-serif;
+    --text: #e2e8f0; --muted: #94a3b8;
+    --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    --sans: 'Segoe UI', system-ui, -apple-system, sans-serif;
   }
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body { background: var(--bg); color: var(--text); font-family: var(--sans); line-height: 1.65; }
@@ -49,10 +48,11 @@
 <main>
   <div class="eyebrow">Legal</div>
   <h1>Privacy Policy</h1>
-  <div class="updated">Last updated: August 21, 2026 · Cyber Global Technologies LLC</div>
+  <div class="updated">Last updated: September 11, 2026 · Cyber Global Technologies LLC</div>
 
   <div class="callout">
-    <p><strong>The short version:</strong> MergeMind is a CI action — your PR diff is sent directly to OpenAI's API to generate the analysis, and MergeMind never stores or logs your code. The only data MergeMind keeps is what's needed to deliver and validate licenses: the checkout email and your license key.</p>
+    <p><strong>The short version:</strong> MergeMind is a CI action — your PR diff is sent directly to OpenAI's API to generate the analysis, and MergeMind never stores or logs your code. The only product data MergeMind keeps is what's needed to deliver and validate licenses: the checkout email and your license key.</p>
+    <p style="margin-top:14px"><strong>The website is separate.</strong> This marketing site (mergemind.dev) records anonymous visit events — see <a href="#analytics">Section 5, Website Analytics</a> for exactly what, and how to opt out.</p>
   </div>
 
   <h2>1. Who We Are</h2>
@@ -65,6 +65,7 @@
     <li><strong>Configuration</strong> — settings from your repo's <code>.pr-describer.yml</code>, if present.</li>
   </ul>
   <p>We do not access repository secrets or environment variables beyond the API key you explicitly provide as a GitHub/GitLab secret.</p>
+  <p>This section covers the CI action. For the data collected by this website, see <a href="#analytics">Section 5</a>.</p>
 
   <h2>3. Third-Party AI Processing</h2>
   <p>MergeMind runs entirely inside your own CI environment (GitHub Actions or GitLab CI) — it does not run on any MergeMind-operated server. When it runs, the PR diff is sent directly from your CI runner to <strong>OpenAI's API</strong> to generate the compliance analysis, title, and description. This happens using the <code>OPENAI_API_KEY</code> you provide as a CI secret; MergeMind's own infrastructure never sees or handles this content.</p>
@@ -72,24 +73,36 @@
 
   <h2>4. Data Retention</h2>
   <p>Your PR diffs are never stored by MergeMind — they go directly from your CI environment to the LLM provider you configured, and the only record of a run lives in your own GitHub Actions or GitLab CI run history.</p>
-  <p>The only data MergeMind stores is what's needed to deliver and validate licenses: the email address used at checkout, the license key, and the plan purchased. This is kept in a small key store operated by MergeMind. You can request access, correction, or deletion of this data at any time (see Section 8).</p>
+  <p>The only product data MergeMind stores is what's needed to deliver and validate licenses: the email address used at checkout, the license key, and the plan purchased. This is kept in a small key store operated by MergeMind. You can request access, correction, or deletion of this data at any time (see Section 9).</p>
+  <p>Website visit events are separate from this and are described in Section 5 below.</p>
 
-  <h2>5. Your Responsibilities</h2>
+  <h2 id="analytics">5. Website Analytics</h2>
+  <p>Running the MergeMind action never touches this website. If you visit mergemind.dev, though, the page records a small amount of visit data so we can tell whether the site is working and where visitors come from:</p>
+  <ul>
+    <li><strong>What we record</strong> — the page path you viewed, your <strong>country</strong> (derived at the network edge from your IP address by Cloudflare), the referring page, your browser's user-agent string, your screen width, and any campaign parameters (<code>utm_source</code>, <code>utm_medium</code>, <code>utm_campaign</code>, <code>utm_content</code>) in the link you arrived on.</li>
+    <li><strong>Identifiers</strong> — a randomly generated visitor ID kept in your browser's <code>localStorage</code>, and a session ID that expires after 30 minutes of inactivity. These are random values: they are not your name, email address, or IP address, and we do not use them to build a profile of you across other sites.</li>
+    <li><strong>Where it goes</strong> — events are written to a Supabase database operated by MergeMind. They are not sold, and not shared with advertisers. The site is served through Cloudflare, which also keeps standard request logs and may provide aggregate analytics.</li>
+    <li><strong>Retention</strong> — visit events are kept for aggregate traffic reporting for up to 24 months.</li>
+    <li><strong>Purchase events</strong> — when a license is purchased we also record the plan and the checkout email against the signup event, so we can reconcile sales.</li>
+  </ul>
+  <p><strong>Opting out.</strong> We honour <code>Do Not Track</code> and <code>Global Privacy Control</code>: if your browser sends either signal, the tracking script does not run at all and no visitor ID is stored. You can also opt out permanently at any time by running <code>localStorage.setItem('cgt_optout','1')</code> in your browser's developer console on this site, or by blocking requests to <code>*.supabase.co</code>.</p>
+
+  <h2>6. Your Responsibilities</h2>
   <p>You are responsible for ensuring your organization's data policy permits sending PR diffs to your chosen LLM provider. If your repository may contain sensitive content unsuitable for a third-party AI provider, exclude or mask those files from the diff before MergeMind runs (e.g., via your own CI filtering).</p>
 
-  <h2>6. Security</h2>
+  <h2>7. Security</h2>
   <p>The GitHub Action requests only the minimum permissions it needs (<code>pull-requests: write</code>). Never commit your <code>OPENAI_API_KEY</code> or <code>MERGEMIND_LICENSE_KEY</code> to your repository — always store them as CI secrets.</p>
 
-  <h2>7. Payment Information</h2>
+  <h2>8. Payment Information</h2>
   <p>License purchases are processed by Stripe via a Stripe Payment Link. We never see or store your card details. After checkout, we send the license key to the email address you provided at checkout; Stripe also sends you a receipt.</p>
 
-  <h2>8. Your Rights</h2>
+  <h2>9. Your Rights</h2>
   <p>You may request access to, correction of, or deletion of any account/license data we hold by emailing <a href="mailto:info@cyberglobal.ai">info@cyberglobal.ai</a>. Because PR diff content is never stored by MergeMind, there is nothing to delete on that front.</p>
 
-  <h2>9. Changes to This Policy</h2>
+  <h2>10. Changes to This Policy</h2>
   <p>We may update this policy from time to time. Material changes will be reflected by the "Last updated" date above.</p>
 
-  <h2>10. Contact</h2>
+  <h2>11. Contact</h2>
   <p>Questions about this policy? Email <a href="mailto:info@cyberglobal.ai">info@cyberglobal.ai</a>, or open a GitHub issue on the <a href="https://github.com/gusinfosec/mergemind" target="_blank">MergeMind repo</a>.</p>
 </main>
 

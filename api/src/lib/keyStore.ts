@@ -44,6 +44,16 @@ export function generateKey(): string {
   return "mm_live_" + randomBytes(16).toString("hex");
 }
 
+/**
+ * Logs are shipped off-box and read by more people than the key store, so
+ * never write a full license key to them. Keeps the prefix + last 4 for
+ * correlation; the admin API is the place to look a key up.
+ */
+export function maskKey(key: string): string {
+  if (!key) return "";
+  return key.length <= 12 ? "mm_live_…" : `${key.slice(0, 9)}…${key.slice(-4)}`;
+}
+
 export function createLicense(email: string, plan: Plan): LicenseRecord {
   const store = read();
   const record: LicenseRecord = {

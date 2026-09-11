@@ -1,6 +1,6 @@
  import type { Request, Response } from "express";
 import Stripe from "stripe";
-import { createLicense, setDeliveryStatus } from "../lib/keyStore";
+import { createLicense, setDeliveryStatus, maskKey } from "../lib/keyStore";
 import type { Plan } from "../lib/keyStore";
 import { emailConfigured, sendLicenseEmail } from "../lib/email";
 
@@ -54,7 +54,7 @@ const handler = async (req: Request, res: Response) => {
       } else {
         const plan = resolvePlan(session);
         const record = createLicense(email, plan);
-        console.log(`[license] issued ${plan} key for ${email}: ${record.key}`);
+        console.log(`[license] issued ${plan} key for ${email}: ${maskKey(record.key)}`);
 
         // Deliver the license key by email. Never let an email failure block or
         // fail the webhook (Stripe would retry and we'd mint a duplicate key) —

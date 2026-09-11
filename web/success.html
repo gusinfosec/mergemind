@@ -9,15 +9,14 @@
 <link rel="canonical" href="https://mergemind.dev/success">
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
 <link rel="icon" type="image/png" href="/favicon.png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root {
     --bg: #060a14; --bg2: #0b1120; --bg3: #101829;
     --border: rgba(99,130,200,0.12); --border2: rgba(99,130,200,0.22);
     --blue: #3b82f6; --purple: #a78bfa; --green: #34d399; --amber: #fbbf24;
-    --text: #e2e8f0; --muted: #64748b;
-    --mono: 'JetBrains Mono', monospace; --sans: 'Space Grotesk', sans-serif;
+    --text: #e2e8f0; --muted: #94a3b8;
+    --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    --sans: 'Segoe UI', system-ui, -apple-system, sans-serif;
   }
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body { background: var(--bg); color: var(--text); font-family: var(--sans); line-height: 1.65; }
@@ -38,7 +37,7 @@
   code { background: var(--bg3); border: 1px solid var(--border); border-radius: 5px; padding: 2px 7px; font-family: var(--mono); font-size: 13px; color: var(--green); }
   p { color: #b7c1d1; margin-bottom: 14px; }
   a { color: var(--blue); }
-  .btn { display: inline-block; margin-top: 8px; font-family: var(--mono); font-size: 14px; font-weight: 500; padding: 12px 24px; border-radius: 8px; background: linear-gradient(135deg, #3b82f6, #6d28d9); color: white; text-decoration: none; transition: opacity 0.2s; }
+  .btn { display: inline-block; margin-top: 8px; font-family: var(--mono); font-size: 14px; font-weight: 500; padding: 12px 24px; border-radius: 8px; background: linear-gradient(135deg, #2563eb, #6d28d9); color: white; text-decoration: none; transition: opacity 0.2s; }
   .btn:hover { opacity: 0.9; }
   footer { border-top: 1px solid var(--border); padding: 28px 24px; text-align: center; font-size: 13px; color: var(--muted); }
   footer a { color: var(--muted); }
@@ -65,6 +64,7 @@
     <li>Grab your license key from the email (<code>MERGEMIND_LICENSE_KEY</code>).</li>
     <li>In your repo, go to <strong>Settings → Secrets and variables → Actions → New repository secret</strong>.</li>
     <li>Add the secret <code>MERGEMIND_LICENSE_KEY</code> with your key as the value.</li>
+    <li>Make sure your workflow passes it to the action — the <code>license_key: ${{ secrets.MERGEMIND_LICENSE_KEY }}</code> line from the <a href="/#install">install step</a>. Without that line the action runs on the free tier even with the secret set.</li>
     <li>Open a pull request — MergeMind runs automatically and unlocks the full compliance stack (SOX, SOC 2, ISO 27001 mapping, control-gap analysis, remediation recommendations).</li>
   </ol>
 
@@ -84,6 +84,18 @@
   const SUPABASE_URL = "https://seeamzqyctkjmaktfgdx.supabase.co";
   const SUPABASE_KEY = "sb_publishable_hn2BXf6z93HnulzdwCDdqg_rORXh9bU";
   const PRODUCT = "mergemind";
+
+  // Honour Do Not Track / Global Privacy Control and an explicit opt-out.
+  // The Privacy Policy (Section 5) documents this — keep the two in sync.
+  function trackingDisabled() {
+    try {
+      if (localStorage.getItem("cgt_optout") === "1") return true;
+    } catch (e) {}
+    var dnt = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+    if (dnt === "1" || dnt === "yes") return true;
+    if (navigator.globalPrivacyControl === true || window.globalPrivacyControl === true) return true;
+    return false;
+  }
 
   function getUTMParams() {
     const UTM_KEYS = ["utm_source", "utm_medium", "utm_campaign", "utm_content"];
@@ -143,6 +155,7 @@
     }
 
   function track(eventType, extra) {
+    if (trackingDisabled()) return;
     getCountry().then(function (country) {
       const payload = {
         product: PRODUCT,

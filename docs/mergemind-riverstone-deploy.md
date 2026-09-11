@@ -41,6 +41,30 @@ ssh riverstone 'cd ~/mergemind && docker compose up -d --build'
 | `RESEND_API_KEY` | shared CGT Resend key (same as compliance-ai/review-site) — **license email delivery** |
 | `EMAIL_FROM` | `noreply@cyberglobal.ai` — domain must be verified in Resend |
 
+## ⚠️ Known state (verified Sep 11, 2026)
+
+**`STRIPE_SECRET_KEY` in `~/mergemind/api.env` is EXPIRED.** `GET /v1/balance`
+returns `Expired API Key provided: sk_live_…ES9Sop`, and every other service on
+riverstone carries a different, working key (tail `Jkye7` / `B9uqN` / `FTohX` /
+`GzEIV` / `o1Idw`).
+
+What this does **not** break — verified, not assumed:
+
+- **The customer purchase path still works.** Live purchases go through the Stripe
+  Payment Link (`buy.stripe.com/…`) and are verified by `stripe.webhooks.constructEvent`,
+  which is a *local* HMAC check and makes no Stripe API call. Probed against the live
+  endpoint: valid signature → `200`, tampered → `400`, unsigned → `400`.
+- **License key delivery works.** Resend domain `cyberglobal.ai` is `verified` and
+  `EMAIL_FROM=noreply@cyberglobal.ai`.
+
+What it does break: any code path that calls the Stripe API — currently only
+`api/src/routes/billing.ts` (`checkout.sessions.create`), which the website no longer
+uses (it links straight to the Payment Link). Fix before building refunds, a billing
+portal or server-created checkout sessions.
+
+To fix: put a working live key in `~/mergemind/api.env`, then
+`docker compose up -d --force-recreate` (a plain `restart` does not re-read `env_file`).
+
 ## Stripe webhook (Aug 11, 2026)
 
 - **Endpoint `we_1U3LXEFnIuEgeFxObRhchTq8`** (created via API) →

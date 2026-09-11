@@ -51,7 +51,7 @@
     --red: #f87171;
     --amber: #fbbf24;
     --text: #e2e8f0;
-    --muted: #64748b;
+    --muted: #94a3b8;   /* was #64748b — 4.16:1 on --bg, below WCAG AA for small text */
     --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
     --sans: 'Segoe UI', system-ui, -apple-system, sans-serif;
   }
@@ -107,7 +107,7 @@
   .logo-icon {
     width: 32px; height: 32px;
     border-radius: 8px;
-    background: linear-gradient(135deg, #3b82f6, #6d28d9);
+    background: linear-gradient(135deg, #2563eb, #6d28d9);
     display: flex; align-items: center; justify-content: center;
     font-family: var(--mono);
     font-weight: 700;
@@ -168,7 +168,8 @@
     font-size: 13px;
     padding: 8px 18px;
     border-radius: 6px;
-    background: var(--blue);
+    /* white on --blue (#3b82f6) is 3.68:1 — below AA for 13px text */
+    background: #2563eb;
     color: white;
     text-decoration: none;
     font-weight: 500;
@@ -266,7 +267,7 @@
     font-weight: 500;
     padding: 12px 24px;
     border-radius: 8px;
-    background: linear-gradient(135deg, #3b82f6, #6d28d9);
+    background: linear-gradient(135deg, #2563eb, #6d28d9);
     color: white;
     text-decoration: none;
     transition: opacity 0.2s, transform 0.2s;
@@ -376,7 +377,8 @@
     border-left: 3px solid var(--green);
   }
 
-  .t-key { color: var(--purple); }
+  /* pre so the padded labels actually line up (HTML collapses runs of spaces) */
+  .t-key { color: var(--purple); white-space: pre; }
   .t-val { color: var(--text); }
   .t-red { color: var(--red); font-weight: 700; }
   .t-green { color: var(--green); }
@@ -421,7 +423,8 @@
 
   .features-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    /* min() lets cards shrink below 280px instead of overflowing at 320px */
+    grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr));
     gap: 1px;
     background: var(--border);
     border: 1px solid var(--border);
@@ -502,7 +505,7 @@
   .pr-avatar {
     width: 32px; height: 32px;
     border-radius: 50%;
-    background: linear-gradient(135deg, #3b82f6, #6d28d9);
+    background: linear-gradient(135deg, #2563eb, #6d28d9);
     display: flex; align-items: center; justify-content: center;
     font-family: var(--mono);
     font-size: 11px;
@@ -728,8 +731,16 @@
   }
   .pricing-btn.outline:hover { border-color: var(--blue); }
 
+  .card-note {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+    line-height: 1.6;
+    margin-top: 1rem;
+  }
+
   .pricing-btn.filled {
-    background: linear-gradient(135deg, #3b82f6, #6d28d9);
+    background: linear-gradient(135deg, #2563eb, #6d28d9);
     color: white;
   }
   .pricing-btn.filled:hover { opacity: 0.85; }
@@ -766,6 +777,11 @@
 
   .step-content {
     padding: 1.5rem;
+    /* Grid items default to min-content width, which let the nowrap code
+       block blow this column out to ~730px and get silently clipped by
+       .install-steps { overflow: hidden }. min-width:0 lets it shrink and
+       hand the overflow to the block's own horizontal scroll. */
+    min-width: 0;
   }
 
   .step-title {
@@ -792,6 +808,39 @@
     font-size: 12px;
     color: #9ca3af;
     overflow-x: auto;
+    white-space: pre;
+  }
+
+  /* Copyable code blocks — the install snippet has to be paste-ready. */
+  .code-wrap { position: relative; min-width: 0; }
+  .code-copy {
+    position: absolute;
+    top: 0.6rem; right: 0.6rem;
+    font-family: var(--mono);
+    font-size: 11px;
+    padding: 4px 10px;
+    border-radius: 6px;
+    border: 1px solid var(--border2);
+    background: var(--bg2);
+    color: var(--text);
+    cursor: pointer;
+  }
+  .code-copy:hover { border-color: var(--blue); }
+  .code-wrap .code-block { padding-right: 4.5rem; }
+  /* Inline code paths like .github/workflows/mergemind.yml are one long
+     unbreakable token — let them wrap instead of pushing the column wide. */
+  code { overflow-wrap: anywhere; }
+
+  /* On phones the copy button sits above the block rather than eating a
+     quarter of its width; the code scrolls horizontally as usual. */
+  @media (max-width: 640px) {
+    .code-copy {
+      position: static;
+      display: block;
+      width: max-content;
+      margin: 0 0 6px auto;
+    }
+    .code-wrap .code-block { padding-right: 1rem; }
   }
 
   .code-block .kw { color: var(--purple); }
@@ -837,9 +886,16 @@
       padding: 0 2rem;
       max-height: 0;
       overflow: hidden;
+      /* visibility is what actually takes the closed menu out of the tab
+         order — max-height:0 leaves its links keyboard-focusable. */
+      visibility: hidden;
+      transition: max-height 0.25s ease, visibility 0s linear 0.25s;
+    }
+    nav.open .nav-right {
+      max-height: 400px;
+      visibility: visible;
       transition: max-height 0.25s ease;
     }
-    nav.open .nav-right { max-height: 400px; }
     .nav-links {
       flex-direction: column;
       align-items: stretch;
@@ -849,6 +905,37 @@
     .nav-links a { display: block; padding: 14px 0; font-size: 14px; }
     .nav-cta { margin: 16px 0 20px; text-align: center; }
     footer { flex-direction: column; text-align: center; }
+  }
+
+  /* ACCESSIBILITY */
+  a:focus-visible, button:focus-visible, summary:focus-visible {
+    outline: 2px solid var(--blue);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
+  .skip-link {
+    position: absolute;
+    left: -9999px;
+    top: 0;
+    z-index: 200;
+    background: var(--bg2);
+    border: 1px solid var(--border2);
+    border-radius: 0 0 8px 0;
+    padding: 10px 16px;
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--text);
+    text-decoration: none;
+  }
+  .skip-link:focus { left: 0; }
+
+  /* Narrow phones: let the grid collapse and trim the gutters. */
+  @media (max-width: 400px) {
+    section { padding: 4rem 1.25rem; }
+    .hero { padding: 80px 1.25rem 3rem; }
+    .features-grid { grid-template-columns: 1fr; }
+    .feature-card { padding: 1.5rem; }
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -861,8 +948,10 @@
 </head>
 <body>
 
+<a class="skip-link" href="#main">Skip to content</a>
+
 <nav>
-  <a href="#" class="nav-logo">
+  <a href="/" class="nav-logo">
     <div class="logo-icon">M</div>
     MergeMind
   </a>
@@ -881,6 +970,8 @@
     <span></span><span></span><span></span>
   </button>
 </nav>
+
+<main id="main">
 
 <!-- HERO -->
 <div class="hero">
@@ -929,9 +1020,9 @@
         <div class="t-after">
           <span class="t-key">PR Title      </span><span class="t-val">feat(auth): enforce MFA</span><br>
           <span class="t-key">Risk Level    </span><span class="t-red">HIGH</span><br>
-          <span class="t-key">SOX           </span><span class="t-blue">CC6.1 — Access controls</span><br>
+          <span class="t-key">SOX (ITGC)    </span><span class="t-blue">Access to programs/data</span><br>
           <span class="t-key">SOC 2         </span><span class="t-blue">CC6.1 — Logical access</span><br>
-          <span class="t-key">ISO 27001     </span><span class="t-blue">A.9.4 — App access ctrl</span><br>
+          <span class="t-key">ISO 27001:2022</span><span class="t-blue">A.8.5 — Secure authentication</span><br>
           <span class="t-key">Gap           </span><span class="t-muted">MFA not in test suite</span><br>
           <span class="t-key">Fix           </span><span class="t-green">Add MFA integration test</span>
         </div>
@@ -955,7 +1046,7 @@
     <div class="feature-card">
       <div class="feature-icon" style="background:rgba(167,139,250,0.1)">🗺️</div>
       <div class="feature-title">Compliance Mapping</div>
-      <p class="feature-desc">Code changes mapped to SOX, SOC 2, and ISO 27001 controls automatically.</p>
+      <p class="feature-desc">Code changes mapped to SOX (ITGC), SOC 2 (TSC 2017) and ISO/IEC 27001:2022 Annex A controls automatically.</p>
     </div>
     <div class="feature-card">
       <div class="feature-icon" style="background:rgba(52,211,153,0.1)">⚠️</div>
@@ -970,7 +1061,7 @@
     <div class="feature-card">
       <div class="feature-icon" style="background:rgba(248,113,113,0.1)">🔒</div>
       <div class="feature-title">No Server-Side Storage</div>
-      <p class="feature-desc">Runs entirely in your CI environment — GitHub Actions or GitLab CI. Your PR diff is sent to OpenAI's API to generate the analysis; MergeMind itself has no server and stores nothing.</p>
+      <p class="feature-desc">Runs entirely in your CI environment — GitHub Actions or GitLab CI. Your PR diff is sent to OpenAI's API to generate the analysis; MergeMind the product has no server and stores no PR code. (This marketing site's own visit analytics are separate and disclosed in the <a href="/privacy" style="color:var(--blue)">Privacy Policy</a>.)</p>
     </div>
     <div class="feature-card">
       <div class="feature-icon" style="background:rgba(59,130,246,0.1)">⚡</div>
@@ -1014,14 +1105,15 @@
       <p style="margin-top:12px">On the paid plan this same comment also includes <span class="pr-code">SOX / SOC 2 / ISO 27001</span> control mappings, control-gap analysis, and remediation recommendations.</p>
     </div>
   </div>
-  <p class="pr-hint">← Real output from a live MergeMind run (verified end-to-end)</p>
+  <p class="pr-hint">← Real output from a live MergeMind run on the free tier — compare it with the paid-plan example in the <a href="https://github.com/gusinfosec/mergemind#readme" target="_blank" rel="noopener" style="color:var(--blue)">README</a></p>
+  <p class="pr-hint" style="margin-top:0.5rem">AI-generated and informational — review findings before relying on them (see <a href="/terms" style="color:var(--blue)">Terms</a>).</p>
 </section>
 
 <!-- INSTALL -->
 <section id="install">
   <div class="section-label">// quick install</div>
   <h2 class="section-title"><span style="display:block">Up and running</span><span style="display:block">in 3 steps</span></h2>
-  <p class="section-sub">No CLI, no signup, no config files. Just a YAML workflow and your API key — on GitHub or GitLab.</p>
+  <p class="section-sub">No CLI, no signup, no dashboard. One workflow file and your API key — on GitHub or GitLab.</p>
   <p class="section-sub" style="margin-top:8px;font-size:0.92em">
     GitHub: <code>.github/workflows/mergemind.yml</code> · GitLab: copy
     <code>examples/gitlab-ci.yml</code> from the repo to <code>.gitlab-ci.yml</code>
@@ -1032,26 +1124,45 @@
       <div class="step-num">01</div>
       <div class="step-content">
         <div class="step-title">Add the workflow file</div>
-        <p class="step-desc">Create <code>.github/workflows/mergemind.yml</code> in your repo with this one-liner action:</p>
-        <div class="code-block">
-<span class="kw">steps</span>:<br>
-&nbsp;&nbsp;- <span class="kw">uses</span>: <span class="str">actions/checkout@v4</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">with</span>: { <span class="kw">fetch-depth</span>: <span class="str">0</span> }<br>
-&nbsp;&nbsp;- <span class="kw">uses</span>: <span class="str">gusinfosec/mergemind@v1</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">with</span>:<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">openai_api_key</span>: <span class="str">${{ secrets.OPENAI_API_KEY }}</span>
+        <p class="step-desc">Create <code>.github/workflows/mergemind.yml</code> with this complete workflow — copy the whole thing:</p>
+        <div class="code-wrap">
+          <button class="code-copy" type="button" data-copy="install-workflow" data-track="install_copy_clicked">Copy</button>
+          <pre class="code-block" id="install-workflow">name: MergeMind PR Analysis
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  analyze:
+    runs-on: ubuntu-latest
+    steps:
+      # fetch-depth: 0 so the diff range resolves
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: gusinfosec/mergemind@v1
+        with:
+          openai_api_key: ${{ secrets.OPENAI_API_KEY }}
+          # Optional — omit for the free tier
+          license_key: ${{ secrets.MERGEMIND_LICENSE_KEY }}</pre>
         </div>
-        <p class="step-desc" style="margin-top:0.75rem">Full <code>name</code>/<code>on</code>/<code>permissions</code> boilerplate is in the repo README.</p>
+        <p class="step-desc" style="margin-top:0.75rem">On GitLab, copy <code>examples/gitlab-ci.yml</code> instead and set the same values as CI/CD variables.</p>
       </div>
     </div>
     <div class="install-step">
       <div class="step-num">02</div>
       <div class="step-content">
         <div class="step-title">Add your secrets</div>
-        <p class="step-desc">Go to Settings → Secrets and variables → Actions → New repository secret.</p>
-        <div class="code-block">
-<span class="str">OPENAI_API_KEY</span>=sk-...<br>
-<span class="str">MERGEMIND_LICENSE_KEY</span>=mm_live_...
+        <p class="step-desc">Go to Settings → Secrets and variables → Actions → New repository secret. <code>MERGEMIND_LICENSE_KEY</code> is only needed on the paid license.</p>
+        <div class="code-wrap">
+          <button class="code-copy" type="button" data-copy="install-secrets">Copy</button>
+          <pre class="code-block" id="install-secrets">OPENAI_API_KEY=sk-...
+MERGEMIND_LICENSE_KEY=mm_live_...   # optional — free tier works without it</pre>
         </div>
       </div>
     </div>
@@ -1075,16 +1186,18 @@
     <div class="pricing-card">
       <div class="pricing-name">Free</div>
       <div class="pricing-price">$0</div>
-      <div class="pricing-period">forever</div>
+      <div class="pricing-period">no credit card required</div>
       <ul class="pricing-features">
         <li><span class="check">✓</span> PR title + summary</li>
         <li><span class="check">✓</span> Risk level (Low/Med/High)</li>
+        <li><span class="check">✓</span> First 2,000 characters of each diff</li>
         <li><span class="cross">–</span> Compliance mapping</li>
         <li><span class="cross">–</span> Control gap analysis</li>
         <li><span class="cross">–</span> Remediation recommendations</li>
-        <li><span class="cross">–</span> Full diff analysis</li>
+        <li><span class="cross">–</span> Full-diff analysis</li>
       </ul>
       <a href="https://github.com/gusinfosec/mergemind" class="pricing-btn outline" target="_blank" data-track="install_clicked" data-track-meta='{"source":"pricing-free"}'>Install free →</a>
+      <p class="card-note">Runs on your own <code>OPENAI_API_KEY</code> — OpenAI usage is billed to your account.</p>
     </div>
 
     <div class="pricing-card featured">
@@ -1097,9 +1210,10 @@
         <li><span class="check">✓</span> SOX, SOC 2, ISO 27001 mapping</li>
         <li><span class="check">✓</span> Control gap analysis</li>
         <li><span class="check">✓</span> Remediation recommendations</li>
-        <li><span class="check">✓</span> Full diff (no token limit)</li>
+        <li><span class="check">✓</span> Full diff — no free-tier character cap</li>
       </ul>
       <a href="https://buy.stripe.com/4gM3cva2sfd54bD12ffbq08" class="pricing-btn filled" target="_blank" data-track="checkout_started" data-track-meta='{"plan":"license","source":"pricing"}'>Get License — $29 →</a>
+      <p class="card-note">One-time, per repository. Runs on your own <code>OPENAI_API_KEY</code> — OpenAI usage is billed to your account separately.</p>
     </div>
   </div>
   <p class="pr-hint" style="margin-top:1.5rem">
@@ -1117,19 +1231,19 @@
   <div class="faq-list">
     <details>
       <summary>Is my code sent to MergeMind?</summary>
-      <p>No. MergeMind runs entirely inside your own CI environment — your PR diff goes directly from your runner to OpenAI's API. MergeMind's servers never see your code, and nothing is stored on our side except the email + license key used for license delivery.</p>
+      <p>No. MergeMind runs entirely inside your own CI environment — your PR diff goes directly from your runner to OpenAI's API. MergeMind's servers never see your code, and the only product data we store is the email + license key used for license delivery. This website is separate: it records anonymous visit events (page, country, referrer, campaign) so we can see whether the site is working — details and opt-out in the <a href="/privacy">Privacy Policy</a>.</p>
     </details>
     <details>
       <summary>What does the free tier include?</summary>
-      <p>PR title + summary and a Low / Medium / High risk assessment, posted automatically as a PR comment. Free tier analyzes the first 2,000 characters of your diff — plenty for most PRs.</p>
+      <p>PR title + summary and a Low / Medium / High risk assessment, posted automatically as a PR comment. The free tier analyzes the first 2,000 characters of your diff — comfortable for small, focused PRs, and truncated on large ones.</p>
     </details>
     <details>
       <summary>What does the $29 license unlock?</summary>
-      <p>Full-diff analysis with no token limit, plus SOX, SOC 2, and ISO 27001 control mapping, control-gap analysis, and remediation recommendations — all in the same PR comment.</p>
+      <p>The full diff is analyzed (the free tier's 2,000-character cap is removed), plus SOX (ITGC), SOC 2 (TSC 2017) and ISO/IEC 27001:2022 control mapping, control-gap analysis, and remediation recommendations — all in the same PR comment. Genuinely enormous diffs are still bounded by the model's context window.</p>
     </details>
     <details>
       <summary>How do I get my license key after paying?</summary>
-      <p>It's emailed to the address you use at checkout — usually within a minute. Add it as the <code>MERGEMIND_LICENSE_KEY</code> secret in your repo and you're set. Didn't get it? Email <a href="mailto:info@cyberglobal.ai">info@cyberglobal.ai</a>.</p>
+      <p>It's emailed to the address you use at checkout — usually within a minute. Add it as the <code>MERGEMIND_LICENSE_KEY</code> secret in your repo, and make sure the <code>license_key:</code> line from the install step is in your workflow — that's what passes it to the action. Didn't get it? Email <a href="mailto:info@cyberglobal.ai">info@cyberglobal.ai</a>.</p>
     </details>
     <details>
       <summary>Does it work with GitLab?</summary>
@@ -1143,8 +1257,26 @@
       <summary>What if I need a refund?</summary>
       <p>Refunds are at our discretion — email <a href="mailto:info@cyberglobal.ai">info@cyberglobal.ai</a> within 30 days and we'll sort you out.</p>
     </details>
+    <details>
+      <summary>Does it cost anything beyond the license?</summary>
+      <p>MergeMind calls OpenAI with <em>your</em> API key, so model usage is billed to your own OpenAI account — we charge no per-run or per-seat fee. The default model is <code>gpt-4o-mini</code>; see OpenAI's pricing for current rates.</p>
+    </details>
+    <details>
+      <summary>Is MergeMind open source?</summary>
+      <p>The action code is MIT-licensed and public on <a href="https://github.com/gusinfosec/mergemind" target="_blank" rel="noopener">GitHub</a>. The compliance mapping, control-gap analysis and remediation recommendations are what the paid license key unlocks.</p>
+    </details>
+    <details>
+      <summary>Will the free tier stay free?</summary>
+      <p>We intend to keep it free, and we never charge you without you buying a license. The <a href="/terms">Terms</a> let us adjust the free tier if the product changes — if that ever happens we'll say so here.</p>
+    </details>
+    <details>
+      <summary>Are the compliance findings audit-grade?</summary>
+      <p>No — they're AI-generated and informational. They're a fast first pass that shows you what to look at, not a certified audit opinion. Have a human review anything you plan to rely on, as the <a href="/terms">Terms</a> also state.</p>
+    </details>
   </div>
 </section>
+
+</main>
 
 <!-- FOOTER -->
 <footer>
@@ -1158,6 +1290,18 @@
   const SUPABASE_URL = "https://seeamzqyctkjmaktfgdx.supabase.co";
   const SUPABASE_KEY = "sb_publishable_hn2BXf6z93HnulzdwCDdqg_rORXh9bU";
   const PRODUCT = "mergemind";
+
+  // Honour Do Not Track / Global Privacy Control and an explicit opt-out.
+  // The Privacy Policy (Section 5) documents this — keep the two in sync.
+  function trackingDisabled() {
+    try {
+      if (localStorage.getItem("cgt_optout") === "1") return true;
+    } catch (e) {}
+    var dnt = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+    if (dnt === "1" || dnt === "yes") return true;
+    if (navigator.globalPrivacyControl === true || window.globalPrivacyControl === true) return true;
+    return false;
+  }
 
   function getUTMParams() {
     const UTM_KEYS = ["utm_source", "utm_medium", "utm_campaign", "utm_content"];
@@ -1217,6 +1361,7 @@
     }
 
   function track(eventType, extra) {
+    if (trackingDisabled()) return;
     getCountry().then(function (country) {
       const payload = {
         product: PRODUCT,
@@ -1261,6 +1406,30 @@
       var meta = {};
       try { meta = JSON.parse(el.getAttribute("data-track-meta") || "{}"); } catch (e) {}
       window.cgtTrack(eventType, meta);
+    });
+  });
+
+  // Copy buttons for the install snippets
+  document.querySelectorAll("[data-copy]").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var target = document.getElementById(btn.getAttribute("data-copy"));
+      if (!target) return;
+      var text = target.textContent;
+      var done = function () {
+        var prev = btn.textContent;
+        btn.textContent = "Copied";
+        setTimeout(function () { btn.textContent = prev; }, 1500);
+      };
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(done).catch(function () {});
+        return;
+      }
+      var ta = document.createElement("textarea");
+      ta.value = text;
+      document.body.appendChild(ta);
+      ta.select();
+      try { document.execCommand("copy"); done(); } catch (e) {}
+      document.body.removeChild(ta);
     });
   });
 

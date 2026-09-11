@@ -28,8 +28,10 @@ For every pull request, MergeMind generates:
 
 - A structured PR title and summary
 - **Risk level assessment (Low / Medium / High)**
-- **Compliance mapping (SOX, SOC2, ISO 27001)**
+- **Compliance mapping (SOX / SOC 2 / ISO 27001)**
 - **Control gap analysis and remediation recommendations**
+
+Frameworks referenced: **SOX** (IT general controls), **SOC 2** (Trust Services Criteria, 2017 revision) and **ISO/IEC 27001:2022** Annex A. Findings are AI-generated and informational — they are a review aid, not an audit opinion (see the [Terms](https://mergemind.dev/terms)).
 
 ---
 
@@ -39,7 +41,7 @@ For every pull request, MergeMind generates:
 
 Updated some files and fixed bugs
 
-**After (MergeMind)**
+**After — free tier**
 
 ## PR Title
 feat(auth): enforce MFA validation and improve session handling
@@ -52,16 +54,20 @@ feat(auth): enforce MFA validation and improve session handling
 ## Risk Level
 High
 
+**After — paid license** (adds the compliance stack)
+
 ## Compliance Mapping
-- SOX: CC6.1 — Logical access controls
-- SOC2: CC6.1 — Logical and physical access controls
-- ISO27001: A.9.4 — System and application access control
+- SOX (ITGC): access to programs and data
+- SOC 2 (TSC 2017): CC6.1 — Logical access controls
+- ISO/IEC 27001:2022: A.8.5 — Secure authentication
 
 ## Control Gaps
 - MFA enforcement not covered by existing test suite
 
 ## Recommendations
 - Add integration tests for MFA flow before merging to main
+
+> The paid tier analyzes the full diff; the free tier analyzes the first 2,000 characters of it. Control references above are AI-generated and informational — review them before relying on them.
 
 ---
 
@@ -74,7 +80,9 @@ High
 | Compliance mapping (SOX, SOC2, ISO 27001) | No | Yes |
 | Control gap analysis | No | Yes |
 | Remediation recommendations | No | Yes |
-| Full diff analysis (no token limit) | No | Yes |
+| Full diff analysis (free tier caps at 2,000 characters) | No | Yes |
+
+Both tiers call OpenAI with **your own** `OPENAI_API_KEY`, so model usage is billed to your OpenAI account — separate from the one-time license.
 
 ---
 
@@ -162,9 +170,10 @@ For self-managed GitLab, also set `MERGEMIND_GITLAB_HOST` (defaults to `https://
 
 ## Security
 
-- No code stored externally
-- Runs entirely within your GitHub Actions environment
+- No PR code stored externally — MergeMind has no server in the analysis path
+- Runs entirely within your GitHub Actions environment, using your own API key
 - API keys stored as GitHub Secrets
+- The marketing site (mergemind.dev) collects anonymous visit analytics — see the [Privacy Policy](https://mergemind.dev/privacy)
 
 ---
 

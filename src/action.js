@@ -267,12 +267,15 @@ async function run({ diffOverride } = {}) {
   const usableDiff = isPro ? diff : diff.slice(0, 2000);
 
   // 3. Build prompt
+  // Cite each framework with its own identifier — reusing one framework's
+  // numbering for another (e.g. a SOC 2 CC-code under SOX) is wrong and the
+  // compliance audience spots it immediately.
   const complianceSection = isPro
     ? `
 ## Compliance Mapping
-- SOX:
-- SOC2:
-- ISO27001:
+- SOX (ITGC): name the IT general control area (e.g. access to programs and data, program changes, computer operations)
+- SOC 2 (TSC 2017): a CC-series criterion (e.g. CC6.1)
+- ISO/IEC 27001:2022: a 2022 Annex A reference (e.g. A.8.5) — not the superseded 2013 numbering
 
 ## Control Gaps
 -

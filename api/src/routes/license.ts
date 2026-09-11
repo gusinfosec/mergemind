@@ -4,6 +4,7 @@ import {
   createLicense,
   revokeKey,
   listLicenses,
+  maskKey,
   Plan,
 } from "../lib/keyStore";
 
@@ -75,7 +76,7 @@ router.post("/admin/keys", requireAdmin, (req: Request, res: Response) => {
     : "license";
 
   const record = createLicense(email, resolvedPlan);
-  console.log(`[admin] created ${resolvedPlan} key for ${email}: ${record.key}`);
+  console.log(`[admin] created ${resolvedPlan} key for ${email}: ${maskKey(record.key)}`);
 
   return res.status(201).json({
     key: record.key,
@@ -92,7 +93,7 @@ router.delete("/admin/keys/:key", requireAdmin, (req: Request, res: Response) =>
   const { key } = req.params;
   const ok = revokeKey(key);
   if (!ok) return res.status(404).json({ error: "Key not found." });
-  console.log(`[admin] revoked key: ${key}`);
+  console.log(`[admin] revoked key: ${maskKey(key)}`);
   return res.json({ revoked: true, key });
 });
 
