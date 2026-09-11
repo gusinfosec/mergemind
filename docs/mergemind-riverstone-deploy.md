@@ -41,29 +41,44 @@ ssh riverstone 'cd ~/mergemind && docker compose up -d --build'
 | `RESEND_API_KEY` | shared CGT Resend key (same as compliance-ai/review-site) — **license email delivery** |
 | `EMAIL_FROM` | `noreply@cyberglobal.ai` — domain must be verified in Resend |
 
-## ⚠️ Known state (verified Sep 11, 2026)
+## Stripe key (fixed Sep 11, 2026)
 
-**`STRIPE_SECRET_KEY` in `~/mergemind/api.env` is EXPIRED.** `GET /v1/balance`
-returns `Expired API Key provided: sk_live_…ES9Sop`, and every other service on
-riverstone carries a different, working key (tail `Jkye7` / `B9uqN` / `FTohX` /
-`GzEIV` / `o1Idw`).
+`STRIPE_SECRET_KEY` in `~/mergemind/api.env` **was expired** (`sk_live_…ES9Sop`,
+`Expired API Key provided`); it has been replaced with the working live key the
+rest of the fleet uses (`…zEIV`), and the container recreated with
+`docker compose up -d --force-recreate` (a plain `restart` does **not** re-read
+`env_file`). A backup of the previous file is kept next to it as
+`api.env.bak-<timestamp>`.
 
-What this does **not** break — verified, not assumed:
+Verified after the swap: `POST /api/checkout` went from
+`{"error":"Expired API Key provided…"}` to a real
+`https://checkout.stripe.com/c/pay/cs_live_…` session URL.
 
-- **The customer purchase path still works.** Live purchases go through the Stripe
-  Payment Link (`buy.stripe.com/…`) and are verified by `stripe.webhooks.constructEvent`,
-  which is a *local* HMAC check and makes no Stripe API call. Probed against the live
-  endpoint: valid signature → `200`, tampered → `400`, unsigned → `400`.
-- **License key delivery works.** Resend domain `cyberglobal.ai` is `verified` and
-  `EMAIL_FROM=noreply@cyberglobal.ai`.
+Worth knowing for the next rotation: **the customer purchase path never needed
+this key.** Live purchases go through the Stripe Payment Link and are verified by
+`stripe.webhooks.constructEvent`, which is a *local* HMAC check that makes no
+Stripe API call. Probed directly: valid signature → `200`, tampered → `400`,
+unsigned → `400`. So a dead key breaks server-created checkout, refunds and any
+future billing portal — but not the link a customer clicks.
 
-What it does break: any code path that calls the Stripe API — currently only
-`api/src/routes/billing.ts` (`checkout.sessions.create`), which the website no longer
-uses (it links straight to the Payment Link). Fix before building refunds, a billing
-portal or server-created checkout sessions.
+Also verified: Resend domain `cyberglobal.ai` is `verified`, `EMAIL_FROM=noreply@cyberglobal.ai`.
 
-To fix: put a working live key in `~/mergemind/api.env`, then
-`docker compose up -d --force-recreate` (a plain `restart` does not re-read `env_file`).
+## Analytics retention (added Sep 11, 2026)
+
+The site's visit analytics land in the shared Cyber Global Supabase `events`
+table (all products share it; the `product` column separates them). The privacy
+policy commits to keeping events for **up to 24 months**, so riverstone also runs:
+
+| Path | What |
+|---|---|
+| `~/scripts/cgt-analytics-prune.sh` | Deletes `events` rows older than the window |
+| `~/.config/systemd/user/cgt-analytics-prune.{service,timer}` | Weekly trigger (`Persistent=true`) |
+| `~/.config/cgt-analytics.env` | `SUPABASE_URL` + `SUPABASE_SERVICE_KEY` (mode 600) |
+| `~/logs/cgt-analytics-prune.log` | One line per run: cutoff + rows deleted |
+
+The service-role key is required because RLS blocks anon deletes; it lives in its
+own file rather than borrowing another product's env. Delete the timer if the
+retention clause in `web/privacy.html` §5 ever changes.
 
 ## Stripe webhook (Aug 11, 2026)
 
