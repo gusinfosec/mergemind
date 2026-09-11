@@ -6,7 +6,8 @@
   "scripts": {
     "start": "node src/action.js",
     "test:local": "node src/index.js",
-    "test": "node --test test/"
+    "test": "node --test test/",
+    "build": "cp -r web/* ."
   },
   "dependencies": {
     "@octokit/rest": "^20.0.0",
