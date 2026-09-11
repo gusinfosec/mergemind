@@ -9,7 +9,7 @@
 <p align="center"><b>Built for engineering, security, and compliance teams that need audit-aware merge request reviews in GitHub Actions and GitLab CI.</b></p>
 
 <p align="center">
-  <img src="https://github.com/gusinfosec/mergemind/actions/workflows/pr-ai-describer.yml/badge.svg" />
+  <img src="https://github.com/gusinfosec/mergemind/actions/workflows/pr-describer.yml/badge.svg" />
   <a href="./LICENSE"><img src="https://img.shields.io/badge/License-MIT-green.svg" /></a>
   <img src="https://img.shields.io/github/stars/gusinfosec/mergemind" />
 </p>

@@ -64,7 +64,7 @@ ssh riverstone 'cd ~/mergemind && docker compose up -d --build'
   - Hostname: `api.mergemind.dev` → Service: **HTTP → `mergemind-api:3000`**
 - cloudflared container is attached to `mergemind_default` network
   (re-attach after recreating cloudflared: `docker network connect mergemind_default cloudflared`)
-- `src/action.js`, `README.md`, `.github/workflows/pr-ai-describer.yml`, and `api/.env.example`
+- `src/action.js`, `README.md`, `.github/workflows/pr-describer.yml`, and `api/.env.example`
   already default to `https://api.mergemind.dev/api/validate-key`.
 
 ## License key delivery (email, added Sep 2026)
